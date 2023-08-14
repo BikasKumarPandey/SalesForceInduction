@@ -1,4 +1,4 @@
-package com.induction.sales.controller;
+package com.induction.sales.api;
 
 import com.induction.sales.dto.Event;
 import com.induction.sales.service.SalesforceService;
@@ -18,8 +18,6 @@ public class SalesForceController {
     public ResponseEntity<String> getSalesforceToken(@RequestParam("userName") String userName, @RequestParam("password") String password) throws Exception {
         return new ResponseEntity<>(salesforceService.getSalesforceToken(userName, password), HttpStatus.OK);
     }
-
-
 
     @PostMapping("/event")
     public ResponseEntity<String> createEvent(@RequestBody Event event) {
