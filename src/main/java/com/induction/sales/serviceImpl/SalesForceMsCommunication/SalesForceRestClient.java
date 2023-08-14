@@ -22,27 +22,4 @@ public class SalesForceRestClient {
         }
         return salesForceToken.getBody();
     }
-
-
-    public String getEventResponse(HttpEntity<String> entity, String token) {
-        String baseUrl = "https://sacumen7-dev-ed.develop.my.salesforce.com";
-        String query = "SELECT Id, Subject, StartDateTime, EndDateTime FROM Event";
-        String url = baseUrl + "/services/data/v58.0/query?q=" + query;
-      /*  ResponseEntity<String> response = new ResponseEntity<>(restTemplate.postForObject(url, entity, String.class), HttpStatus.OK);
-        System.out.printf("Finall " + response);
-        return "";*/
-
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + token);
-
-        ResponseEntity<String> response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                null,
-                String.class,
-                headers
-        );
-        return "";
-    }
 }

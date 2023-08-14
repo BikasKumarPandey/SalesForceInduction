@@ -31,31 +31,12 @@ public class SalesforceServiceImpl implements SalesforceService {
 
     @Value("${salesforce.redirectUri}")
     private String redirectUri;
+
+    @Value("${salesforce.api.access-token}")
+    private String salesforceAccessToken;
+
     @Autowired
     private SalesForceRestClient salesForceRestClient;
-
-//    @Autowired
-//    private OAuthService oAuthService;
-
-   /* @Override
-    public String getSalesforceData(String userName, String password) throws Exception {
-        String accessToken = oAuthService.getAccessToken(userName, password);
-
-       *//* if (accessToken != null) {
-            RestTemplate restTemplate = new RestTemplate();
-            String apiUrl = "https://instance.salesforce.com/services/data/v53.0/query?q=SELECT+Id,Name+FROM+Account";
-            String authorizationHeader = "Bearer " + accessToken;
-
-            // Make API call and handle response
-            System.out.println("Running");
-            String response = restTemplate.getForObject(apiUrl, String.class);
-
-            return response;
-        }*//*
-
-        return accessToken;
-    }  */
-
 
     @Override
     public String getSalesforceToken(String userName, String userPassword) throws Exception {
@@ -83,7 +64,7 @@ public class SalesforceServiceImpl implements SalesforceService {
         String query = "SELECT Id, Subject, StartDateTime, EndDateTime FROM Event";
         String url = baseUrl + "/services/data/v58.0/query?q=" + query;
 
-        String trying = baseUrl+"/services/data/v53.0/sobjects/Event/";
+        String trying = baseUrl + "/services/data/v53.0/sobjects/Event/";
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + salesforceAccessToken);
@@ -100,7 +81,7 @@ public class SalesforceServiceImpl implements SalesforceService {
         String query = "SELECT Id, Subject, StartDateTime, EndDateTime FROM Event";
         String url = baseUrl + "/services/data/v58.0/query?q=" + query;
 
-        String trying = baseUrl+"/services/data/v53.0/sobjects/Event/";
+        String trying = baseUrl + "/services/data/v53.0/sobjects/Event/";
 
         String apiUrl = "https://sacumen7-dev-ed.develop.my.salesforce.com/services/data/v58.0/query?q=SELECT Id, Subject, StartDateTime, EndDateTime FROM Event";
 
@@ -115,40 +96,6 @@ public class SalesforceServiceImpl implements SalesforceService {
         return restTemplate.exchange(apiUrl, HttpMethod.GET, requestEntity, String.class);
     }
 
-
-
-
-
-
-
-
-
-    public String getEvents(String token) {
-        String baseUrl = "https://sacumen7-dev-ed.develop.my.salesforce.com";
-        String query = "SELECT Id, Subject, StartDateTime, EndDateTime FROM Event";
-        String url = baseUrl + "/services/data/v58.0/query?q=" + query;
-
-//        HttpHeaders headers = new HttpHeaders();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        HttpEntity<String> entity = new HttpEntity<>(requestBodyToGetEvent(token), headers);
-
-        salesForceRestClient.getEventResponse(entity, token);
-       /* ResponseEntity<String> response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                null,
-                String.class,
-                headers
-        );*/
-
-//        String responseBody = response.getBody();
-        return "responseBody";
-
-    }
-
     private String requestBody(String username, String userPassword) {
         return grantType
                 + clientId + "=" + consumerKey
@@ -157,27 +104,5 @@ public class SalesforceServiceImpl implements SalesforceService {
                 + password + "=" + userPassword;
     }
 
-    private String requestBodyToGetEvent(String token) {
-        return "Authorization = Bearer " + token;
-    }
 
-
-    @Value("${salesforce.api.access-token}")
-    private String salesforceAccessToken;
-
-    public String getEventDetails() {
-
-        String apiUrl = "https://sacumen7-dev-ed.develop.my.salesforce.com/services/data/v58.0/query?q=SELECT+Id+,+EventType+,+LogFile+,+LogDate+,+LogFileLength+FROM+EventLogFile+WHERE+LogDate+>+Yesterday+AND+EventType+=+'API'";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + salesforceAccessToken);
-        try {
-
-            ResponseEntity<String> response = new RestTemplate().exchange(apiUrl, HttpMethod.GET, null, String.class);
-        } catch (Exception e) {
-            System.out.printf("NOt found");
-            throw new RuntimeException("Not found");
-        }
-        return "response.getBody()";
-    }
 }
