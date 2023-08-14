@@ -12,4 +12,6 @@ public interface SalesforceService {
     String getEventDetails();
 
     ResponseEntity<String> createEvent(Event event);
+
+    ResponseEntity<String> getEventFromSalesForce(Event event);
 }

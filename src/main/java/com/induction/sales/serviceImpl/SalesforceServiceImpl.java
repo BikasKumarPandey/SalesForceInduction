@@ -83,6 +83,8 @@ public class SalesforceServiceImpl implements SalesforceService {
         String query = "SELECT Id, Subject, StartDateTime, EndDateTime FROM Event";
         String url = baseUrl + "/services/data/v58.0/query?q=" + query;
 
+        String trying = baseUrl+"/services/data/v53.0/sobjects/Event/";
+
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + salesforceAccessToken);
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -90,10 +92,28 @@ public class SalesforceServiceImpl implements SalesforceService {
         HttpEntity<Event> requestEntity = new HttpEntity<>(event, headers);
 
         RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
+        return restTemplate.exchange(trying, HttpMethod.POST, requestEntity, String.class);
     }
 
+    public ResponseEntity<String> getEventFromSalesForce(Event event) {
+        String baseUrl = "https://sacumen7-dev-ed.develop.my.salesforce.com";
+        String query = "SELECT Id, Subject, StartDateTime, EndDateTime FROM Event";
+        String url = baseUrl + "/services/data/v58.0/query?q=" + query;
 
+        String trying = baseUrl+"/services/data/v53.0/sobjects/Event/";
+
+        String apiUrl = "https://sacumen7-dev-ed.develop.my.salesforce.com/services/data/v58.0/query?q=SELECT Id, Subject, StartDateTime, EndDateTime FROM Event";
+
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + salesforceAccessToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Event> requestEntity = new HttpEntity<>(event, headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.exchange(apiUrl, HttpMethod.GET, requestEntity, String.class);
+    }
 
 
 

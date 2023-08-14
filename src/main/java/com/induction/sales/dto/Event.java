@@ -7,5 +7,6 @@ public class Event {
     private String Subject;
     private String StartDateTime;
     private String EndDateTime;
-
+    private Integer DurationInMinutes;
+    private String ActivityDateTime;
 }
