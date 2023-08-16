@@ -2,20 +2,23 @@ package com.induction.sales.util;
 
 public class TestCasesConstantApp {
 
-    public static final String token = "Random_token";
-    public static final String getSalesForceTokenUrl = "/api/salesforce/tokenGenerator";
-    public static final String eventInSalesForceUrl = "/api/salesforce/event";
-    public static final String getEventFromSalesForceTest = "/api/salesforce/event";
+    public static final String TOKEN = "Random_token";
+    public static final String GET_SALESFORCE_TOKEN_URL = "/api/salesforce/tokenGenerator";
+    public static final String SALESFORCE_EVENT_URL = "/api/salesforce/event";
 
 
-    public static final String userNameKey = "userName";
-    public static final String userNameValue = "Random user neme";
-    public static final String blankString ="   \t\n";;
-    public static final String passwordKey = "password";
-    public static final String passwordValue = "RandomPassword";
-    public static final String authorizationKey = "Authorization";
-    public static final String authorizationValue = "Bearer mockToken";
-    public static final String subject = "Random subject";
+    public static final String USER_NAME_KEY = "userName";
+    public static final String USER_NAME_VALUE = "Random user neme";
+    public static final String BLANK ="   \t\n";;
+    public static final String PASSWORD_KEY = "password";
+    public static final String PASSWORD_VALUE = "RandomPassword";
+    public static final String AUTHORIZATION_KEY = "Authorization";
+    public static final String AUTHORIZATION_VALUE = "Bearer mockToken";
+    public static final String SUBJECT = "Random subject";
+    public static final String START_DATE_TIME = "2023-08-15T10:00:00Z";
+    public static final String END_DATE_TIME = "2023-08-15T10:00:00Z";
+    public static final String ACTIVITY_DATE_TIME = "2023-08-15T10:00:00Z";
+    public static final int DURATION_IN_MINUTES = 120;
 
 
 

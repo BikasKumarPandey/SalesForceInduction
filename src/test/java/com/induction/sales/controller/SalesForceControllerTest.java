@@ -26,15 +26,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
-import static com.induction.sales.util.TestCasesConstantApp.getSalesForceTokenUrl;
-import static com.induction.sales.util.TestCasesConstantApp.eventInSalesForceUrl;
-import static com.induction.sales.util.TestCasesConstantApp.authorizationKey;
-import static com.induction.sales.util.TestCasesConstantApp.authorizationValue;
-import static com.induction.sales.util.TestCasesConstantApp.userNameKey;
-import static com.induction.sales.util.TestCasesConstantApp.userNameValue;
-import static com.induction.sales.util.TestCasesConstantApp.token;
-import static com.induction.sales.util.TestCasesConstantApp.passwordKey;
-import static com.induction.sales.util.TestCasesConstantApp.passwordValue;
+import static com.induction.sales.util.TestCasesConstantApp.GET_SALESFORCE_TOKEN_URL;
+import static com.induction.sales.util.TestCasesConstantApp.SALESFORCE_EVENT_URL;
+import static com.induction.sales.util.TestCasesConstantApp.AUTHORIZATION_KEY;
+import static com.induction.sales.util.TestCasesConstantApp.AUTHORIZATION_VALUE;
+import static com.induction.sales.util.TestCasesConstantApp.USER_NAME_KEY;
+import static com.induction.sales.util.TestCasesConstantApp.USER_NAME_VALUE;
+import static com.induction.sales.util.TestCasesConstantApp.TOKEN;
+import static com.induction.sales.util.TestCasesConstantApp.PASSWORD_KEY;
+import static com.induction.sales.util.TestCasesConstantApp.PASSWORD_VALUE;
 
 @ExtendWith(MockitoExtension.class)
 public class SalesForceControllerTest {
@@ -55,14 +55,14 @@ public class SalesForceControllerTest {
     @Test
     public void getSalesforceTokenTest() throws Exception {
 
-        when(salesforceService.getSalesforceToken(anyString(), anyString())).thenReturn(token);
+        when(salesforceService.getSalesforceToken(anyString(), anyString())).thenReturn(TOKEN);
 
-        mockMvc.perform(get(getSalesForceTokenUrl)
-                        .param(userNameKey, userNameValue)
-                        .param(passwordKey, passwordValue)
+        mockMvc.perform(get(GET_SALESFORCE_TOKEN_URL)
+                        .param(USER_NAME_KEY, USER_NAME_VALUE)
+                        .param(PASSWORD_KEY, PASSWORD_VALUE)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().string(token));
+                .andExpect(content().string(TOKEN));
     }
 
     // TODO: 16/08/23 Remove hard coded value
@@ -72,8 +72,8 @@ public class SalesForceControllerTest {
         when(salesforceService.createEventInSalesForce(any(Event.class), anyString()))
                 .thenReturn(ResponseEntity.ok(new ObjectMapper().writeValueAsString(getEvent())));
 
-        mockMvc.perform(post(eventInSalesForceUrl)
-                        .header(authorizationKey, authorizationValue)
+        mockMvc.perform(post(SALESFORCE_EVENT_URL)
+                        .header(AUTHORIZATION_KEY, AUTHORIZATION_VALUE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(getEvent()))
                         .accept(MediaType.APPLICATION_JSON))
@@ -82,21 +82,21 @@ public class SalesForceControllerTest {
         event.setSubject("Important Meeting");
         event.setStartDateTime("2023-08-15T10:00:00Z");
         event.setEndDateTime("2023-08-15T12:00:00Z");
-        event.setDurationInMinutes(120); // Set the duration in minutes
-        event.setActivityDateTime("2023-08-15T10:00:00Z"); // Set the activity date and time
+        event.setDurationInMinutes(120);
+        event.setActivityDateTime("2023-08-15T10:00:00Z");
 
-        verify(salesforceService).createEventInSalesForce(event, authorizationValue);
+        verify(salesforceService).createEventInSalesForce(event, AUTHORIZATION_VALUE);
     }
 
     @Test
     public void getEventFromSalesForceTest() throws Exception {
-        when(salesforceService.getEventFromSalesForce(anyString())).thenReturn(ResponseEntity.ok(token));
+        when(salesforceService.getEventFromSalesForce(anyString())).thenReturn(ResponseEntity.ok(TOKEN));
 
-        mockMvc.perform(get(eventInSalesForceUrl)
-                        .header(authorizationKey, authorizationValue)
+        mockMvc.perform(get(SALESFORCE_EVENT_URL)
+                        .header(AUTHORIZATION_KEY, AUTHORIZATION_VALUE)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().string(token));
+                .andExpect(content().string(TOKEN));
     }
 
 }
