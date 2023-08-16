@@ -2,6 +2,7 @@ package com.induction.sales.serviceImpl.SalesForceMsCommunication;
 
 import com.induction.sales.dto.AccessTokenResponse;
 import com.induction.sales.dto.Event;
+import com.induction.sales.dto.EventResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
