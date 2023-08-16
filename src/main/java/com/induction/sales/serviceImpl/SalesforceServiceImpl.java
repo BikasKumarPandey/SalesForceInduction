@@ -1,13 +1,9 @@
 package com.induction.sales.serviceImpl;
 
-import com.induction.sales.dto.Event;
-import com.induction.sales.serviceImpl.SalesForceMsCommunication.SalesForceRestClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import com.induction.sales.service.SalesforceService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import com.induction.sales.dto.AccessTokenResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -15,8 +11,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpMethod;
+import com.induction.sales.dto.Event;
+import com.induction.sales.serviceImpl.SalesForceMsCommunication.SalesForceRestClient;
+import com.induction.sales.service.SalesforceService;
+import com.induction.sales.dto.AccessTokenResponse;
 
-import static com.induction.sales.util.ApplicationConstants.*;
+import static com.induction.sales.util.ApplicationConstants.grantType;
+import static com.induction.sales.util.ApplicationConstants.clientId;
+import static com.induction.sales.util.ApplicationConstants.clientSecret;
+import static com.induction.sales.util.ApplicationConstants.userName;
+import static com.induction.sales.util.ApplicationConstants.password;
+import static com.induction.sales.util.ApplicationConstants.createSalesForceEventURl;
 
 @Service
 public class SalesforceServiceImpl implements SalesforceService {
@@ -29,17 +34,16 @@ public class SalesforceServiceImpl implements SalesforceService {
     @Value("${salesforce.consumerSecret}")
     private String consumerSecret;
 
-    @Value("${salesforce.redirectUri}")
-    private String redirectUri;
-
-    @Value("${salesforce.api.access-token}")
-    private String salesforceAccessToken;
-
     @Autowired
     private SalesForceRestClient salesForceRestClient;
 
     @Override
     public String getSalesforceToken(String userName, String userPassword) throws Exception {
+        if ((userName.isBlank() || userName.isEmpty() || userName == null) ||
+                (userPassword.isBlank() || userPassword.isEmpty() || userPassword == null))
+        {
+            throw new Exception("Invalid username and password");
+        }
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -58,29 +62,32 @@ public class SalesforceServiceImpl implements SalesforceService {
         return response.getAccessToken();
     }
 
-    public ResponseEntity<String> createEvent(Event event) {
-        String baseUrl = "https://sacumen7-dev-ed.develop.my.salesforce.com";
-
-        String trying = baseUrl + "/services/data/v53.0/sobjects/Event/";
+    public ResponseEntity<String> createEvent(Event event, String authorizationHeader) throws Exception {
+        String accessToken = authorizationHeader.replace("Bearer ", "");
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + salesforceAccessToken);
+        headers.set("Authorization", "Bearer " + accessToken);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<Event> requestEntity = new HttpEntity<>(event, headers);
+        ResponseEntity<String> eventInSalesForce = salesForceRestClient.createEventInSalesForce(createSalesForceEventURl, requestEntity);
 
-        RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.exchange(trying, HttpMethod.POST, requestEntity, String.class);
+        if (eventInSalesForce == null) {
+            throw new Exception("Event not created");
+        }
+        return eventInSalesForce;
     }
 
-    public ResponseEntity<String> getEventFromSalesForce(Event event) {
+    public ResponseEntity<String> getEventFromSalesForce(String authorizationHeader) {
         String apiUrl = "https://sacumen7-dev-ed.develop.my.salesforce.com/services/data/v58.0/query?q=SELECT Id, Subject, StartDateTime, EndDateTime FROM Event";
 
+        String accessToken = authorizationHeader.replace("Bearer ", "");
+
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + salesforceAccessToken);
+        headers.set("Authorization", "Bearer " + accessToken);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<Event> requestEntity = new HttpEntity<>(event, headers);
+        HttpEntity<Event> requestEntity = new HttpEntity<>(headers);
 
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.exchange(apiUrl, HttpMethod.GET, requestEntity, String.class);

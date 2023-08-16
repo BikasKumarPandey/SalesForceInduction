@@ -1,6 +1,7 @@
 package com.induction.sales.serviceImpl.SalesForceMsCommunication;
 
 import com.induction.sales.dto.AccessTokenResponse;
+import com.induction.sales.dto.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -18,8 +19,19 @@ public class SalesForceRestClient {
         try {
             salesForceToken = new ResponseEntity<>(restTemplate.postForObject(salesForceTokenUrl, entity, AccessTokenResponse.class), HttpStatus.OK);
         } catch (Exception e) {
-            throw new Exception("Error while commincating with Sales force url");
+            throw new Exception("Error while communicating with Sales force url");
         }
         return salesForceToken.getBody();
+    }
+
+
+    public ResponseEntity<String> createEventInSalesForce(String createSalesForceEventURl, HttpEntity<Event> requestEntity) throws Exception {
+        ResponseEntity<String> createdEvent = null;
+                try {
+                    createdEvent=  restTemplate.exchange(createSalesForceEventURl, HttpMethod.POST, requestEntity, String.class);
+                }catch (Exception e) {
+                    throw new Exception("Error while communicating with Sales force url");
+                }
+                return createdEvent;
     }
 }

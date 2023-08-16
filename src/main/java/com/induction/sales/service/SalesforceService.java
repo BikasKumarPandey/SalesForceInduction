@@ -7,7 +7,7 @@ public interface SalesforceService {
 
     String getSalesforceToken(String userName, String password) throws Exception;
 
-    ResponseEntity<String> createEvent(Event event);
+    ResponseEntity<String> createEvent(Event event, String authorizationHeader) throws Exception;
 
-    ResponseEntity<String> getEventFromSalesForce(Event event);
+    ResponseEntity<String> getEventFromSalesForce(String authorizationHeader);
 }
