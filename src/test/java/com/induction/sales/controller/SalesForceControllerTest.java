@@ -65,7 +65,6 @@ public class SalesForceControllerTest {
                 .andExpect(content().string(token));
     }
 
-
     // TODO: 16/08/23 Remove hard coded value
     @Test
     public void createEventInSalesForceTest() throws Exception {
@@ -88,7 +87,6 @@ public class SalesForceControllerTest {
 
         verify(salesforceService).createEventInSalesForce(event, authorizationValue);
     }
-
 
     @Test
     public void getEventFromSalesForceTest() throws Exception {
