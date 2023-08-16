@@ -27,7 +27,7 @@ public class TestCasesConstantApp {
 
     public final static String salesForceTokenUrl = "https://login.salesforce.com/services/oauth2/token";
     public final static String createSalesForceEventBaseURl = "https://sacumen7-dev-ed.develop.my.salesforce.com";
-    public final static String createSalesForceEventURl = createSalesForceEventBaseURl + "/services/data/v53.0/sobjects/Event/";
+    public final static String CREATE_SALESFORCE_EVENT_URL = createSalesForceEventBaseURl + "/services/data/v53.0/sobjects/Event/";
     public final static String getSalesForceEventUrl = createSalesForceEventBaseURl + "/services/data/v58.0/query?q=SELECT Id, Subject, StartDateTime, EndDateTime FROM Event";
 
 }

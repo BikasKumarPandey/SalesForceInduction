@@ -81,7 +81,6 @@ public class SalesforceServiceImpl implements SalesforceService {
             logger.error("could not create event in sales force.");
             throw new Exception("Event not created");
         }
-        System.out.println(eventInSalesForce);
         return eventInSalesForce;
     }
 
