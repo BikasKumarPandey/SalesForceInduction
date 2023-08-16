@@ -24,7 +24,7 @@ public class SalesForceController {
     public ResponseEntity<String> getSalesforceToken(@RequestParam("userName") String userName, @RequestParam("password") String password) throws Exception {
         return new ResponseEntity<>(salesforceService.getSalesforceToken(userName, password), HttpStatus.OK);
     }
-
+    // TODO: 16/08/23 Remove hard coded value
     @PostMapping("event")
     public ResponseEntity<String> createEventInSalesForce(@RequestBody Event event, @RequestHeader("Authorization") String authorizationHeader) throws Exception {
         event.setSubject("Important Meeting");
