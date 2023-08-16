@@ -2,18 +2,20 @@ package com.induction.sales.util;
 
 public class TestCasesConstantApp {
 
-    public static final String token = "RANDOM_TOKEN";
+    public static final String token = "Random_token";
     public static final String getSalesForceTokenUrl = "/api/salesforce/tokenGenerator";
     public static final String eventInSalesForceUrl = "/api/salesforce/event";
     public static final String getEventFromSalesForceTest = "/api/salesforce/event";
 
 
     public static final String userNameKey = "userName";
-    public static final String userNameValue = "RANDOM_USER_NAME";
+    public static final String userNameValue = "Random user neme";
+    public static final String blankString ="   \t\n";;
     public static final String passwordKey = "password";
-    public static final String passwordValue = "RANDOM_PASSWORD";
+    public static final String passwordValue = "RandomPassword";
     public static final String authorizationKey = "Authorization";
     public static final String authorizationValue = "Bearer mockToken";
+    public static final String subject = "Random subject";
 
 
 
