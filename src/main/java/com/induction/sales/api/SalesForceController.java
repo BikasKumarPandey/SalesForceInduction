@@ -33,11 +33,11 @@ public class SalesForceController {
         event.setDurationInMinutes(120); // Set the duration in minutes
         event.setActivityDateTime("2023-08-15T10:00:00Z"); // Set the activity date and time
 
-        return salesforceService.createEvent(event, authorizationHeader);
+        return salesforceService.createEventInSalesForce(event, authorizationHeader);
     }
 
     @GetMapping("event")
-    public ResponseEntity<String> getEventFromSalesForce(@RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<String> getEventFromSalesForce(@RequestHeader("Authorization") String authorizationHeader) throws Exception {
         return salesforceService.getEventFromSalesForce(authorizationHeader);
     }
 
