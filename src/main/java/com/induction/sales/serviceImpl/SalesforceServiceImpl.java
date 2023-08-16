@@ -58,11 +58,8 @@ public class SalesforceServiceImpl implements SalesforceService {
         return response.getAccessToken();
     }
 
-
     public ResponseEntity<String> createEvent(Event event) {
         String baseUrl = "https://sacumen7-dev-ed.develop.my.salesforce.com";
-        String query = "SELECT Id, Subject, StartDateTime, EndDateTime FROM Event";
-        String url = baseUrl + "/services/data/v58.0/query?q=" + query;
 
         String trying = baseUrl + "/services/data/v53.0/sobjects/Event/";
 
@@ -77,14 +74,7 @@ public class SalesforceServiceImpl implements SalesforceService {
     }
 
     public ResponseEntity<String> getEventFromSalesForce(Event event) {
-        String baseUrl = "https://sacumen7-dev-ed.develop.my.salesforce.com";
-        String query = "SELECT Id, Subject, StartDateTime, EndDateTime FROM Event";
-        String url = baseUrl + "/services/data/v58.0/query?q=" + query;
-
-        String trying = baseUrl + "/services/data/v53.0/sobjects/Event/";
-
         String apiUrl = "https://sacumen7-dev-ed.develop.my.salesforce.com/services/data/v58.0/query?q=SELECT Id, Subject, StartDateTime, EndDateTime FROM Event";
-
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + salesforceAccessToken);
