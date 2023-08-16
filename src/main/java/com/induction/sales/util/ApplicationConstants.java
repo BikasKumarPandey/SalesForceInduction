@@ -14,6 +14,4 @@ public class ApplicationConstants {
     public final static String userName = "&username";
     public final static String password = "&password";
 
-
-
 }
