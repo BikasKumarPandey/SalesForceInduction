@@ -20,16 +20,35 @@ public class SalesForceController {
     @Autowired
     private SalesforceService salesforceService;
 
+    /**
+     * Retrieves an access token from the SalesForce API.
+     *
+     * @param userName The username for authentication.
+     * @return An AccessTokenResponse containing the access token to perform operation such as events.
+     */
     @GetMapping("tokenGenerator")
     public ResponseEntity<String> getSalesforceToken(@RequestParam("userName") String userName, @RequestParam("password") String password) throws Exception {
         return new ResponseEntity<>(salesforceService.getSalesforceToken(userName, password), HttpStatus.OK);
     }
 
+    /**
+     * create event in the SalesForce system.
+     *
+     * @param event               to add event details in SalesForce system.
+     * @param authorizationHeader The Header containing token.
+     * @return An event id and success status.
+     */
     @PostMapping("event")
     public ResponseEntity<String> createEventInSalesForce(@RequestBody Event event, @RequestHeader("Authorization") String authorizationHeader) throws Exception {
         return salesforceService.createEventInSalesForce(event, authorizationHeader);
     }
 
+    /**
+     * get events from the SalesForce system.
+     *
+     * @param authorizationHeader The Header containing token.
+     * @return An all events created.
+     */
     @GetMapping("event")
     public ResponseEntity<String> getEventFromSalesForce(@RequestHeader("Authorization") String authorizationHeader) throws Exception {
         return salesforceService.getEventFromSalesForce(authorizationHeader);

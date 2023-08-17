@@ -14,6 +14,10 @@ import static com.induction.sales.util.ApplicationConstants.SALES_FORCE_TOKEN_UR
 import static com.induction.sales.util.ApplicationConstants.SALES_FORCE_GET_EVENT_URL;
 import static com.induction.sales.util.ApplicationConstants.SALES_FORCE_CREATE_EVENT_URL;
 
+/**
+ * A service class for interacting with the SalesForce REST API.
+ */
+
 @Service
 public class SalesForceRestClient {
 
@@ -22,6 +26,14 @@ public class SalesForceRestClient {
 
     private static final String REST_TEMPLATE_ERROR = "Invalid Credentials or Error while communicating with Sales force url";
 
+    /**
+     * Retrieves an access token from the SalesForce API.
+     *
+     * @param entity The HTTP request entity containing the User credential and content type.
+     * @return An AccessTokenResponse containing the access token to perform operation such as events.
+     * @throws Exception If an error occurs during the API call.
+     */
+// TODO: 17/08/23 5. use httpclient , 1. throw specific error, 1. wire mock
     public AccessTokenResponse getToken(HttpEntity<String> entity) throws Exception {
         ResponseEntity<AccessTokenResponse> salesForceToken;
         try {
@@ -32,6 +44,13 @@ public class SalesForceRestClient {
         return salesForceToken.getBody();
     }
 
+    /**
+     * Creates an event in the SalesForce system.
+     *
+     * @param requestEntity The HTTP request entity containing the event information and headers.
+     * @return A ResponseEntity containing the response from the SalesForce API.
+     * @throws Exception If an error occurs during the API call.
+     */
     public ResponseEntity<String> createEventInSalesForce(HttpEntity<Event> requestEntity) throws Exception {
         ResponseEntity<String> createdEvent;
         try {
@@ -42,6 +61,13 @@ public class SalesForceRestClient {
         return createdEvent;
     }
 
+    /**
+     * Retrieves an event from the SalesForce system.
+     *
+     * @param requestEntity The HTTP request entity containing the header information .
+     * @return A ResponseEntity containing the response from the SalesForce API.
+     * @throws Exception If an error occurs during the API call.
+     */
     public ResponseEntity<String> getEventFromSalesForce(HttpEntity<Event> requestEntity) throws Exception {
         ResponseEntity<String> eventsFromSalesForce;
         try {

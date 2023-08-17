@@ -21,6 +21,10 @@ import static com.induction.sales.util.ApplicationConstants.USER_NAME_KEY;
 import static com.induction.sales.util.ApplicationConstants.PASSWORD_KEY;
 import static com.induction.sales.util.ApplicationConstants.BEARER;
 
+
+/**
+ * A service class implementing logic to perform sales force system operations.
+ */
 @Service
 public class SalesforceServiceImpl implements SalesforceService {
 
@@ -35,6 +39,14 @@ public class SalesforceServiceImpl implements SalesforceService {
     @Autowired
     private SalesForceRestClient salesForceRestClient;
 
+    /**
+     * Retrieves an access token from the SalesForce API.
+     *
+     * @param userName The username for authentication.
+     * @param userPassword The password for authentication.
+     * @return An AccessTokenResponse containing the access token to perform operation such as events.
+     * @throws Exception If an error occurs during any condition pass.
+     */
     @Override
     public String getSalesforceToken(String userName, String userPassword) throws Exception {
         if ((userName.isBlank() || userName.isEmpty() || userName == null) ||
@@ -56,6 +68,14 @@ public class SalesforceServiceImpl implements SalesforceService {
         return response.getAccessToken();
     }
 
+    /**
+     * create event in the SalesForce system.
+     *
+     * @param event to add event details in SalesForce system.
+     * @param authorizationHeader The Header containing token.
+     * @return An event id and success status.
+     * @throws Exception If an error occurs during any condition pass.
+     */
     public ResponseEntity<String> createEventInSalesForce(Event event, String authorizationHeader) throws Exception {
         if (event == null) {
             logger.error("event details are not added.");
@@ -78,6 +98,13 @@ public class SalesforceServiceImpl implements SalesforceService {
         return eventInSalesForce;
     }
 
+    /**
+     * get events from the SalesForce system.
+     *
+     * @param authorizationHeader The Header containing token.
+     * @return An all events created.
+     * @throws Exception If an error occurs during any condition pass.
+     */
     public ResponseEntity<String> getEventFromSalesForce(String authorizationHeader) throws Exception {
         String accessToken = authorizationHeader.replace(BEARER, "");
         HttpHeaders headers = new HttpHeaders();
