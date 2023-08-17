@@ -82,7 +82,7 @@ public class SalesforceServiceImplTest {
         when(salesForceRestClient.getToken(any())).thenReturn(getAccessTokenResponse());
 
         String actualToken = salesforceService.getSalesforceToken(USER_NAME_VALUE, PASSWORD_VALUE);
-        Assertions.assertEquals(actualToken, TOKEN);
+        Assertions.assertEquals(TOKEN, actualToken);
     }
 
     @Test
@@ -110,7 +110,7 @@ public class SalesforceServiceImplTest {
         when(salesForceRestClient.createEventInSalesForce(anyString(), any())).thenReturn(ResponseEntity.ok(TOKEN));
 
         ResponseEntity<String> actualValue = salesforceService.createEventInSalesForce(getEvent(), AUTHORIZATION_VALUE);
-        Assertions.assertEquals(actualValue.getBody(), TOKEN);
+        Assertions.assertEquals(TOKEN, actualValue.getBody());
     }
 
     @Test
@@ -137,7 +137,7 @@ public class SalesforceServiceImplTest {
         ResponseEntity<String> eventFromSalesForce = salesforceService.getEventFromSalesForce(AUTHORIZATION_VALUE);
         String actualEvent = eventFromSalesForce.getBody();
 
-        Assertions.assertEquals(getEvent().toString(),actualEvent);
+        Assertions.assertEquals(getEvent().toString(), actualEvent);
     }
 
 }
