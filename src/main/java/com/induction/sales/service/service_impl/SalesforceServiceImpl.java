@@ -43,7 +43,7 @@ public class SalesforceServiceImpl implements SalesforceService {
     /**
      * Retrieves an access token from the SalesForce API.
      *
-     * @param userName     The username for authentication.
+     * @param userName The username for authentication.
      * @param userPassword The password for authentication.
      * @return An AccessTokenResponse containing the access token to perform operation such as events.
      * @throws Exception If an error occurs during any condition pass.
@@ -53,12 +53,12 @@ public class SalesforceServiceImpl implements SalesforceService {
         if (userName.isEmpty() || userPassword.isEmpty()) {
             throw new BadRequestException("Invalid username and password");
         }
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        HttpEntity<String> entity = new HttpEntity<>(requestBody(userName, userPassword), headers);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        HttpEntity<String> httpEntity = new HttpEntity<>(requestBody(userName, userPassword),  httpHeaders);
 
         logger.info("Token requested from Salesforce");
-        AccessTokenResponse response = salesForceRestClient.getToken(entity);
+        AccessTokenResponse response = salesForceRestClient.getToken(httpEntity);
         logger.info("AccessToken fetched successfully");
 
         if (response == null) {
@@ -71,7 +71,7 @@ public class SalesforceServiceImpl implements SalesforceService {
     /**
      * create event in the SalesForce system.
      *
-     * @param event               to add event details in SalesForce system.
+     * @param event to add event details in SalesForce system.
      * @param authorizationHeader The Header containing token.
      * @return An event id and success status.
      * @throws Exception If an error occurs during any condition pass.
@@ -82,13 +82,13 @@ public class SalesforceServiceImpl implements SalesforceService {
             throw new BadRequestException("Required details not added");
         }
         String accessToken = authorizationHeader.replace(BEARER, "");
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", BEARER + accessToken);
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Event> requestEntity = new HttpEntity<>(event, headers);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set("Authorization", BEARER + accessToken);
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Event> requestHttpEntity = new HttpEntity<>(event, httpHeaders);
 
         logger.info("Requested to create event in SalesForce");
-        ResponseEntity<String> eventInSalesForce = salesForceRestClient.createEventInSalesForce(requestEntity);
+        ResponseEntity<String> eventInSalesForce = salesForceRestClient.createEventInSalesForce(requestHttpEntity);
         logger.info("Event created successfully in SalesForce");
 
         if (eventInSalesForce == null) {
@@ -110,10 +110,10 @@ public class SalesforceServiceImpl implements SalesforceService {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", BEARER + accessToken);
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Event> requestEntity = new HttpEntity<>(headers);
+        HttpEntity<Event> requestHttpEntity = new HttpEntity<>(headers);
 
         logger.info("Requested Events from SalesForce.");
-        ResponseEntity<String> eventFromSalesForce = salesForceRestClient.getEventFromSalesForce(requestEntity);
+        ResponseEntity<String> eventFromSalesForce = salesForceRestClient.getEventFromSalesForce(requestHttpEntity);
         logger.info("Fetched Events from SalesForce successfully.");
 
         if (eventFromSalesForce == null) {

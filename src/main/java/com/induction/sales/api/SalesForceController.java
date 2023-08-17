@@ -34,7 +34,7 @@ public class SalesForceController {
     /**
      * create event in the SalesForce system.
      *
-     * @param event               to add event details in SalesForce system.
+     * @param event to add event details in SalesForce system.
      * @param authorizationHeader The Header containing token.
      * @return An event id and success status.
      */
