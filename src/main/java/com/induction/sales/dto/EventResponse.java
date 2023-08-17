@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EventResponse {
     private String id;
-    private String Subject;
-    private String StartDateTime;
-    private String EndDateTime;
+    private String subject;
+    private String startDateTime;
+    private String endDateTime;
 }

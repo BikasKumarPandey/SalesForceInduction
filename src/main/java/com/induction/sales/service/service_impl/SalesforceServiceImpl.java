@@ -1,4 +1,4 @@
-package com.induction.sales.serviceImpl;
+package com.induction.sales.service.service_impl;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,17 +10,16 @@ import org.springframework.http.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.induction.sales.dto.Event;
-import com.induction.sales.serviceImpl.SalesForceMsCommunication.SalesForceRestClient;
+import com.induction.sales.service.sales_force_rest_api.SalesForceRestClient;
 import com.induction.sales.service.SalesforceService;
 import com.induction.sales.dto.AccessTokenResponse;
 
-import static com.induction.sales.util.ApplicationConstants.grantType;
-import static com.induction.sales.util.ApplicationConstants.clientId;
-import static com.induction.sales.util.ApplicationConstants.clientSecret;
-import static com.induction.sales.util.ApplicationConstants.userName;
-import static com.induction.sales.util.ApplicationConstants.password;
-import static com.induction.sales.util.ApplicationConstants.createSalesForceEventURl;
-import static com.induction.sales.util.ApplicationConstants.getSalesForceEventUrl;
+import static com.induction.sales.util.ApplicationConstants.GRANT_TYPE;
+import static com.induction.sales.util.ApplicationConstants.CLIENT_ID;
+import static com.induction.sales.util.ApplicationConstants.CLIENT_SECRET;
+import static com.induction.sales.util.ApplicationConstants.USER_NAME_KEY;
+import static com.induction.sales.util.ApplicationConstants.PASSWORD_KEY;
+import static com.induction.sales.util.ApplicationConstants.BEARER;
 
 @Service
 public class SalesforceServiceImpl implements SalesforceService {
@@ -42,10 +41,8 @@ public class SalesforceServiceImpl implements SalesforceService {
                 (userPassword.isBlank() || userPassword.isEmpty() || userPassword == null)) {
             throw new Exception("Invalid username and password");
         }
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
         HttpEntity<String> entity = new HttpEntity<>(requestBody(userName, userPassword), headers);
 
         logger.info("Token requested from Salesforce");
@@ -56,7 +53,6 @@ public class SalesforceServiceImpl implements SalesforceService {
             logger.error("Got null as response while fetching token from sales force url");
             throw new Exception("Access token is null");
         }
-
         return response.getAccessToken();
     }
 
@@ -65,16 +61,14 @@ public class SalesforceServiceImpl implements SalesforceService {
             logger.error("event details are not added.");
             throw new Exception("Required details not added");
         }
-        String accessToken = authorizationHeader.replace("Bearer ", "");
-
+        String accessToken = authorizationHeader.replace(BEARER, "");
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + accessToken);
+        headers.set("Authorization", BEARER + accessToken);
         headers.setContentType(MediaType.APPLICATION_JSON);
-
         HttpEntity<Event> requestEntity = new HttpEntity<>(event, headers);
 
         logger.info("Requested to create event in SalesForce");
-        ResponseEntity<String> eventInSalesForce = salesForceRestClient.createEventInSalesForce(createSalesForceEventURl, requestEntity);
+        ResponseEntity<String> eventInSalesForce = salesForceRestClient.createEventInSalesForce(requestEntity);
         logger.info("Event created successfully in SalesForce");
 
         if (eventInSalesForce == null) {
@@ -85,16 +79,14 @@ public class SalesforceServiceImpl implements SalesforceService {
     }
 
     public ResponseEntity<String> getEventFromSalesForce(String authorizationHeader) throws Exception {
-
-        String accessToken = authorizationHeader.replace("Bearer ", "");
+        String accessToken = authorizationHeader.replace(BEARER, "");
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + accessToken);
+        headers.set("Authorization", BEARER + accessToken);
         headers.setContentType(MediaType.APPLICATION_JSON);
-
         HttpEntity<Event> requestEntity = new HttpEntity<>(headers);
 
         logger.info("Requested Events from SalesForce.");
-        ResponseEntity<String> eventFromSalesForce = salesForceRestClient.getEventFromSalesForce(getSalesForceEventUrl, requestEntity);
+        ResponseEntity<String> eventFromSalesForce = salesForceRestClient.getEventFromSalesForce(requestEntity);
         logger.info("Fetched Events from SalesForce successfully.");
 
         if (eventFromSalesForce == null) {
@@ -106,11 +98,11 @@ public class SalesforceServiceImpl implements SalesforceService {
 
 
     private String requestBody(String username, String userPassword) {
-        return grantType
-                + clientId + "=" + consumerKey
-                + clientSecret + "=" + consumerSecret
-                + userName + "=" + username
-                + password + "=" + userPassword;
+        return GRANT_TYPE
+                + CLIENT_ID + "=" + consumerKey
+                + CLIENT_SECRET + "=" + consumerSecret
+                + USER_NAME_KEY + "=" + username
+                + PASSWORD_KEY + "=" + userPassword;
     }
 
 

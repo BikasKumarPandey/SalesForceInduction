@@ -1,8 +1,8 @@
 package com.induction.sales.service;
 
 
-import com.induction.sales.serviceImpl.SalesForceMsCommunication.SalesForceRestClient;
-import com.induction.sales.serviceImpl.SalesforceServiceImpl;
+import com.induction.sales.service.sales_force_rest_api.SalesForceRestClient;
+import com.induction.sales.service.service_impl.SalesforceServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,6 @@ import static com.induction.sales.util.MockModels.getAccessTokenResponse;
 import static com.induction.sales.util.MockModels.getEvent;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import static com.induction.sales.util.TestCasesConstantApp.PASSWORD_VALUE;
@@ -97,7 +96,7 @@ public class SalesforceServiceImplTest {
 
     @Test
     public void createEventInSalesForce_when_restclass_gives_null_throws_expection() throws Exception {
-        when(salesForceRestClient.createEventInSalesForce(anyString(), any())).thenReturn(null);
+        when(salesForceRestClient.createEventInSalesForce(any())).thenReturn(null);
 
         assertThrows(Exception.class, () -> {
             salesforceService.createEventInSalesForce(getEvent(), AUTHORIZATION_VALUE);
@@ -107,7 +106,7 @@ public class SalesforceServiceImplTest {
     @Test
     @DisplayName("Get reateEventInSalesForce method positive test cases")
     public void createEventInSalesForce_when_restclass_gives_notNull_return_success() throws Exception {
-        when(salesForceRestClient.createEventInSalesForce(anyString(), any())).thenReturn(ResponseEntity.ok(TOKEN));
+        when(salesForceRestClient.createEventInSalesForce(any())).thenReturn(ResponseEntity.ok(TOKEN));
 
         ResponseEntity<String> actualValue = salesforceService.createEventInSalesForce(getEvent(), AUTHORIZATION_VALUE);
         Assertions.assertEquals(TOKEN, actualValue.getBody());
@@ -123,7 +122,7 @@ public class SalesforceServiceImplTest {
 
     @Test
     public void getEventFromSalesForce_when_restClass_returns_null_throws_exception() throws Exception {
-        when(salesForceRestClient.getEventFromSalesForce(anyString(), any())).thenReturn(null);
+        when(salesForceRestClient.getEventFromSalesForce(any())).thenReturn(null);
 
         assertThrows(Exception.class, () -> {
             salesforceService.getEventFromSalesForce(AUTHORIZATION_VALUE);
@@ -132,7 +131,7 @@ public class SalesforceServiceImplTest {
 
     @Test
     public void getEventFromSalesForce_when_restClass_returns_notNull_returns_response() throws Exception {
-        when(salesForceRestClient.getEventFromSalesForce(anyString(), any())).thenReturn(ResponseEntity.ok(getEvent().toString()));
+        when(salesForceRestClient.getEventFromSalesForce(any())).thenReturn(ResponseEntity.ok(getEvent().toString()));
 
         ResponseEntity<String> eventFromSalesForce = salesforceService.getEventFromSalesForce(AUTHORIZATION_VALUE);
         String actualEvent = eventFromSalesForce.getBody();
