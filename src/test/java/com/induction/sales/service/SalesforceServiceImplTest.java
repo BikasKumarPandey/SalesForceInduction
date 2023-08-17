@@ -139,7 +139,7 @@ public class SalesforceServiceImplTest {
     public void getSalesforceToken_when_token_is_noPresent_throw_exception() throws Exception {
 
         assertThrows(BadRequestException.class, () -> {
-            salesforceService.getEventFromSalesForce(BLANK);
+            salesforceService.getEventFromSalesForce("");
         });
     }
 
