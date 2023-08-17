@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
 import static com.induction.sales.util.MockModels.getEvent;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -55,7 +56,7 @@ public class SalesForceControllerTest {
     }
 
     @Test
-    public void getSalesforceTokenTest() throws Exception {
+    public void getSalesforceToken_when_valid_param_given_gives_response() throws Exception {
         when(salesforceService.getSalesforceToken(anyString(), anyString())).thenReturn(TOKEN);
 
         mockMvc.perform(get(GET_SALESFORCE_TOKEN_URL)
@@ -67,7 +68,25 @@ public class SalesForceControllerTest {
     }
 
     @Test
-    public void createEventInSalesForceTest() throws Exception {
+    public void getSalesforceToken_when_Params_missing_throws_exception() throws Exception {
+
+        mockMvc.perform(get(GET_SALESFORCE_TOKEN_URL)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void getSalesforceToken_Incorrect_Url_Throws_NotFoundException() throws Exception {
+
+        mockMvc.perform(get("/RANDOM_URL")
+                        .param(USER_NAME_KEY, USER_NAME_VALUE)
+                        .param(PASSWORD_KEY, PASSWORD_VALUE)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void createEventInSalesForce_when_given_valid_params_gives_response() throws Exception {
         when(salesforceService.createEventInSalesForce(any(Event.class), anyString()))
                 .thenReturn(ResponseEntity.ok(new ObjectMapper().writeValueAsString(getEvent())));
 
@@ -82,7 +101,36 @@ public class SalesForceControllerTest {
     }
 
     @Test
-    public void getEventFromSalesForceTest() throws Exception {
+    public void createEventInSalesForce_when_event_not_given_throws_error() throws Exception {
+
+        mockMvc.perform(post(SALESFORCE_EVENT_URL)
+                        .header("Authorization", "valid-token")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void createEventInSalesForce_when_authorization_not_given_throws_error() throws Exception {
+
+        mockMvc.perform(post(SALESFORCE_EVENT_URL)
+                        .content(getEvent().toString())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void createEventInSalesForce_Incorrect_Url_Throws_NotFoundException() throws Exception {
+
+        mockMvc.perform(get("/RANDOM_URL")
+                        .content(getEvent().toString()) // Replace with your actual JSON payload
+                        .header(AUTHORIZATION_KEY, AUTHORIZATION_VALUE)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+
+    @Test
+    public void getEventFromSalesForce_when_valid_header_provided_gives_response() throws Exception {
         when(salesforceService.getEventFromSalesForce(anyString())).thenReturn(ResponseEntity.ok(TOKEN));
 
         mockMvc.perform(get(SALESFORCE_EVENT_URL)
@@ -91,5 +139,22 @@ public class SalesForceControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(TOKEN));
     }
+
+    @Test
+    public void getEventFromSalesForce_when_header_notProvided_gives_response() throws Exception {
+
+        mockMvc.perform(get(SALESFORCE_EVENT_URL)
+                )
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void getEventFromSalesForce_Incorrect_Url_Throws_NotFoundException() throws Exception {
+
+        mockMvc.perform(get("/RANDOM_URL")
+                        .header(AUTHORIZATION_KEY, AUTHORIZATION_VALUE))
+                .andExpect(status().isNotFound());
+    }
+
 
 }

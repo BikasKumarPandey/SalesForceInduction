@@ -34,7 +34,6 @@ public class SalesforceServiceImplTest {
     private SalesForceRestClient salesForceRestClient;
 
     @Test
-    @DisplayName("Get salesForceToken method negative test cases")
     public void getSalesforceToken_when_userName_is_empty_throw_exception() throws Exception {
 
         assertThrows(Exception.class, () -> {
@@ -76,7 +75,6 @@ public class SalesforceServiceImplTest {
     }
 
     @Test
-    @DisplayName("Get salesForceToken method positive test cases")
     public void getSalesforceToken_when_Valid_details_given_returns_response() throws Exception {
         when(salesForceRestClient.getToken(any())).thenReturn(getAccessTokenResponse());
 
@@ -85,7 +83,6 @@ public class SalesforceServiceImplTest {
     }
 
     @Test
-    @DisplayName("Get reateEventInSalesForce method negative test cases")
     public void createEventInSalesForce_when_given_request_is_null_throws_expection() {
 
         assertThrows(Exception.class, () -> {
@@ -104,7 +101,6 @@ public class SalesforceServiceImplTest {
     }
 
     @Test
-    @DisplayName("Get reateEventInSalesForce method positive test cases")
     public void createEventInSalesForce_when_restclass_gives_notNull_return_success() throws Exception {
         when(salesForceRestClient.createEventInSalesForce(any())).thenReturn(ResponseEntity.ok(TOKEN));
 
