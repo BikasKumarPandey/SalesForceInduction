@@ -24,15 +24,9 @@ public class SalesForceController {
     public ResponseEntity<String> getSalesforceToken(@RequestParam("userName") String userName, @RequestParam("password") String password) throws Exception {
         return new ResponseEntity<>(salesforceService.getSalesforceToken(userName, password), HttpStatus.OK);
     }
-    // TODO: 16/08/23 Remove hard coded value
+
     @PostMapping("event")
     public ResponseEntity<String> createEventInSalesForce(@RequestBody Event event, @RequestHeader("Authorization") String authorizationHeader) throws Exception {
-        event.setSubject("Important Meeting");
-        event.setStartDateTime("2023-08-15T10:00:00Z");
-        event.setEndDateTime("2023-08-15T12:00:00Z");
-        event.setDurationInMinutes(120); // Set the duration in minutes
-        event.setActivityDateTime("2023-08-15T10:00:00Z"); // Set the activity date and time
-
         return salesforceService.createEventInSalesForce(event, authorizationHeader);
     }
 

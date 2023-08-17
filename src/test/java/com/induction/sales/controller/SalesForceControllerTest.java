@@ -66,10 +66,8 @@ public class SalesForceControllerTest {
                 .andExpect(content().string(TOKEN));
     }
 
-    // TODO: 16/08/23 Remove hard coded value
     @Test
     public void createEventInSalesForceTest() throws Exception {
-        Event event = new Event();
         when(salesforceService.createEventInSalesForce(any(Event.class), anyString()))
                 .thenReturn(ResponseEntity.ok(new ObjectMapper().writeValueAsString(getEvent())));
 
@@ -80,13 +78,7 @@ public class SalesForceControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        event.setSubject("Important Meeting");
-        event.setStartDateTime("2023-08-15T10:00:00Z");
-        event.setEndDateTime("2023-08-15T12:00:00Z");
-        event.setDurationInMinutes(120);
-        event.setActivityDateTime("2023-08-15T10:00:00Z");
-
-        verify(salesforceService).createEventInSalesForce(event, AUTHORIZATION_VALUE);
+        verify(salesforceService).createEventInSalesForce(getEvent(), AUTHORIZATION_VALUE);
     }
 
     @Test
