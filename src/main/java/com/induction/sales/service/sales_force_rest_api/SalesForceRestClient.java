@@ -2,8 +2,12 @@ package com.induction.sales.service.sales_force_rest_api;
 
 import com.induction.sales.dto.AccessTokenResponse;
 import com.induction.sales.dto.Event;
+import com.induction.sales.util.exception.ResourceNotFoundException;
+import com.induction.sales.util.exception.BadRequestException;
+import com.induction.sales.util.exception.UnauthorizedAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +38,7 @@ public class SalesForceRestClient {
      * @throws Exception If an error occurs during the API call.
      */
 // TODO: 17/08/23 5. use httpclient , 1. throw specific error, 1. wire mock
+/*
     public AccessTokenResponse getToken(HttpEntity<String> entity) throws Exception {
         ResponseEntity<AccessTokenResponse> salesForceToken;
         try {
@@ -43,6 +48,46 @@ public class SalesForceRestClient {
         }
         return salesForceToken.getBody();
     }
+*/
+
+ /* public AccessTokenResponse getToken(HttpEntity<String> entity) throws UnauthorizedAccessException {
+        ResponseEntity<AccessTokenResponse> salesForceToken;
+
+        try {
+            salesForceToken = restTemplate.postForEntity(SALES_FORCE_TOKEN_URL, entity, AccessTokenResponse.class);
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                throw new UnauthorizedAccessException("Unauthorized access to Salesforce API");
+            }
+            else if(e.getStatusCode() == HttpStatus.BAD_REQUEST){
+                throw new UnauthorizedAccessException("Please enter valid userName or Password");
+            }
+            throw e; // Rethrow other exceptions
+        }
+
+        return salesForceToken.getBody();
+    }*/
+    public AccessTokenResponse getToken(HttpEntity<String> entity) throws HttpClientErrorException.BadRequest {
+        ResponseEntity<AccessTokenResponse> salesForceToken;
+
+        try {
+            salesForceToken = restTemplate.postForEntity(SALES_FORCE_TOKEN_URL, entity, AccessTokenResponse.class);
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
+                String responseBody = e.getResponseBodyAsString();
+
+                if (responseBody.contains("invalid_grant")) {
+                    throw new UnauthorizedAccessException("Invalid grant: Authentication failure");
+                }
+                throw new BadRequestException("Bad Request: " + responseBody);
+            } else {
+                throw new ResourceNotFoundException("Error calling Salesforce API url");
+            }
+        }
+
+        return salesForceToken.getBody();
+    }
+
 
     /**
      * Creates an event in the SalesForce system.

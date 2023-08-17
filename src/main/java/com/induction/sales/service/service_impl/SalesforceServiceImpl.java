@@ -1,5 +1,6 @@
 package com.induction.sales.service.service_impl;
 
+import com.induction.sales.util.exception.BadRequestException;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,7 +52,7 @@ public class SalesforceServiceImpl implements SalesforceService {
     public String getSalesforceToken(String userName, String userPassword) throws Exception {
         if ((userName.isBlank() || userName.isEmpty() || userName == null) ||
                 (userPassword.isBlank() || userPassword.isEmpty() || userPassword == null)) {
-            throw new Exception("Invalid username and password");
+            throw new BadRequestException("Invalid username and password");
         }
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
