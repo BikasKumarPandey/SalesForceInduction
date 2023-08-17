@@ -5,9 +5,9 @@ import org.springframework.http.ResponseEntity;
 
 public interface SalesforceService {
 
-    String getSalesforceToken(String userName, String password) throws Exception;
+    String getSalesforceToken(String userName, String password);
 
-    ResponseEntity<String> createEventInSalesForce(Event event, String authorizationHeader) throws Exception;
+    ResponseEntity<String> createEventInSalesForce(Event event, String authorizationHeader);
 
-    ResponseEntity<String> getEventFromSalesForce(String authorizationHeader) throws Exception;
+    ResponseEntity<String> getEventFromSalesForce(String authorizationHeader);
 }

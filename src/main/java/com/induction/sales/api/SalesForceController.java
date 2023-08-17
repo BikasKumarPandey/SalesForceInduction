@@ -27,7 +27,7 @@ public class SalesForceController {
      * @return An AccessTokenResponse containing the access token to perform operation such as events.
      */
     @GetMapping("tokenGenerator")
-    public ResponseEntity<String> getSalesforceToken(@RequestParam("userName") String userName, @RequestParam("password") String password) throws Exception {
+    public ResponseEntity<String> getSalesforceToken(@RequestParam("userName") String userName, @RequestParam("password") String password) {
         return new ResponseEntity<>(salesforceService.getSalesforceToken(userName, password), HttpStatus.OK);
     }
 
@@ -39,7 +39,7 @@ public class SalesForceController {
      * @return An event id and success status.
      */
     @PostMapping("event")
-    public ResponseEntity<String> createEventInSalesForce(@RequestBody Event event, @RequestHeader("Authorization") String authorizationHeader) throws Exception {
+    public ResponseEntity<String> createEventInSalesForce(@RequestBody Event event, @RequestHeader("Authorization") String authorizationHeader) {
         return salesforceService.createEventInSalesForce(event, authorizationHeader);
     }
 
@@ -50,7 +50,7 @@ public class SalesForceController {
      * @return An all events created.
      */
     @GetMapping("event")
-    public ResponseEntity<String> getEventFromSalesForce(@RequestHeader("Authorization") String authorizationHeader) throws Exception {
+    public ResponseEntity<String> getEventFromSalesForce(@RequestHeader("Authorization") String authorizationHeader) {
         return salesforceService.getEventFromSalesForce(authorizationHeader);
     }
 

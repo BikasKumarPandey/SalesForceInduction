@@ -28,8 +28,6 @@ public class SalesForceRestClient {
     @Autowired
     public RestTemplate restTemplate;
 
-    private static final String REST_TEMPLATE_ERROR = "Invalid Credentials or Error while communicating with Sales force url";
-
     /**
      * Retrieves an access token from the SalesForce API.
      *
@@ -38,36 +36,7 @@ public class SalesForceRestClient {
      * @throws Exception If an error occurs during the API call.
      */
 // TODO: 17/08/23 5. use httpclient , 1. throw specific error, 1. wire mock
-/*
-    public AccessTokenResponse getToken(HttpEntity<String> entity) throws Exception {
-        ResponseEntity<AccessTokenResponse> salesForceToken;
-        try {
-            salesForceToken = new ResponseEntity<>(restTemplate.postForObject(SALES_FORCE_TOKEN_URL, entity, AccessTokenResponse.class), HttpStatus.OK);
-        } catch (Exception e) {
-            throw new Exception(REST_TEMPLATE_ERROR);
-        }
-        return salesForceToken.getBody();
-    }
-*/
-
- /* public AccessTokenResponse getToken(HttpEntity<String> entity) throws UnauthorizedAccessException {
-        ResponseEntity<AccessTokenResponse> salesForceToken;
-
-        try {
-            salesForceToken = restTemplate.postForEntity(SALES_FORCE_TOKEN_URL, entity, AccessTokenResponse.class);
-        } catch (HttpClientErrorException e) {
-            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-                throw new UnauthorizedAccessException("Unauthorized access to Salesforce API");
-            }
-            else if(e.getStatusCode() == HttpStatus.BAD_REQUEST){
-                throw new UnauthorizedAccessException("Please enter valid userName or Password");
-            }
-            throw e; // Rethrow other exceptions
-        }
-
-        return salesForceToken.getBody();
-    }*/
-    public AccessTokenResponse getToken(HttpEntity<String> entity) throws HttpClientErrorException.BadRequest {
+    public AccessTokenResponse getToken(HttpEntity<String> entity) {
         ResponseEntity<AccessTokenResponse> salesForceToken;
 
         try {
@@ -96,15 +65,21 @@ public class SalesForceRestClient {
      * @return A ResponseEntity containing the response from the SalesForce API.
      * @throws Exception If an error occurs during the API call.
      */
-    public ResponseEntity<String> createEventInSalesForce(HttpEntity<Event> requestEntity) throws Exception {
+    public ResponseEntity<String> createEventInSalesForce(HttpEntity<Event> requestEntity) {
         ResponseEntity<String> createdEvent;
         try {
             createdEvent = restTemplate.exchange(SALES_FORCE_CREATE_EVENT_URL, HttpMethod.POST, requestEntity, String.class);
-        } catch (Exception e) {
-            throw new Exception(REST_TEMPLATE_ERROR);
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                throw new UnauthorizedAccessException("Invalid bearer token");
+            } else if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+                throw new ResourceNotFoundException("Invalid sales force create event url ");
+            }
+            throw new BadRequestException("Bad Request");
         }
         return createdEvent;
     }
+
 
     /**
      * Retrieves an event from the SalesForce system.
@@ -113,12 +88,17 @@ public class SalesForceRestClient {
      * @return A ResponseEntity containing the response from the SalesForce API.
      * @throws Exception If an error occurs during the API call.
      */
-    public ResponseEntity<String> getEventFromSalesForce(HttpEntity<Event> requestEntity) throws Exception {
+    public ResponseEntity<String> getEventFromSalesForce(HttpEntity<Event> requestEntity) {
         ResponseEntity<String> eventsFromSalesForce;
         try {
             eventsFromSalesForce = restTemplate.exchange(SALES_FORCE_GET_EVENT_URL, HttpMethod.GET, requestEntity, String.class);
-        } catch (Exception e) {
-            throw new Exception(REST_TEMPLATE_ERROR);
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                throw new UnauthorizedAccessException("Invalid bearer token");
+            } else if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+                throw new ResourceNotFoundException("Invalid sales force get event url ");
+            }
+            throw new BadRequestException("Bad Request");
         }
         return eventsFromSalesForce;
     }

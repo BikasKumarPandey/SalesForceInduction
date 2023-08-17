@@ -43,15 +43,14 @@ public class SalesforceServiceImpl implements SalesforceService {
     /**
      * Retrieves an access token from the SalesForce API.
      *
-     * @param userName The username for authentication.
+     * @param userName     The username for authentication.
      * @param userPassword The password for authentication.
      * @return An AccessTokenResponse containing the access token to perform operation such as events.
      * @throws Exception If an error occurs during any condition pass.
      */
     @Override
-    public String getSalesforceToken(String userName, String userPassword) throws Exception {
-        if ((userName.isBlank() || userName.isEmpty() || userName == null) ||
-                (userPassword.isBlank() || userPassword.isEmpty() || userPassword == null)) {
+    public String getSalesforceToken(String userName, String userPassword) {
+        if (userName.isEmpty() || userPassword.isEmpty()) {
             throw new BadRequestException("Invalid username and password");
         }
         HttpHeaders headers = new HttpHeaders();
@@ -64,7 +63,7 @@ public class SalesforceServiceImpl implements SalesforceService {
 
         if (response == null) {
             logger.error("Got null as response while fetching token from sales force url");
-            throw new Exception("Access token is null");
+            throw new BadRequestException("Access token is null");
         }
         return response.getAccessToken();
     }
@@ -72,15 +71,15 @@ public class SalesforceServiceImpl implements SalesforceService {
     /**
      * create event in the SalesForce system.
      *
-     * @param event to add event details in SalesForce system.
+     * @param event               to add event details in SalesForce system.
      * @param authorizationHeader The Header containing token.
      * @return An event id and success status.
      * @throws Exception If an error occurs during any condition pass.
      */
-    public ResponseEntity<String> createEventInSalesForce(Event event, String authorizationHeader) throws Exception {
+    public ResponseEntity<String> createEventInSalesForce(Event event, String authorizationHeader) {
         if (event == null) {
             logger.error("event details are not added.");
-            throw new Exception("Required details not added");
+            throw new BadRequestException("Required details not added");
         }
         String accessToken = authorizationHeader.replace(BEARER, "");
         HttpHeaders headers = new HttpHeaders();
@@ -94,7 +93,7 @@ public class SalesforceServiceImpl implements SalesforceService {
 
         if (eventInSalesForce == null) {
             logger.error("could not create event in sales force.");
-            throw new Exception("Event not created");
+            throw new BadRequestException("Event not created");
         }
         return eventInSalesForce;
     }
@@ -106,7 +105,7 @@ public class SalesforceServiceImpl implements SalesforceService {
      * @return An all events created.
      * @throws Exception If an error occurs during any condition pass.
      */
-    public ResponseEntity<String> getEventFromSalesForce(String authorizationHeader) throws Exception {
+    public ResponseEntity<String> getEventFromSalesForce(String authorizationHeader) {
         String accessToken = authorizationHeader.replace(BEARER, "");
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", BEARER + accessToken);
@@ -119,7 +118,7 @@ public class SalesforceServiceImpl implements SalesforceService {
 
         if (eventFromSalesForce == null) {
             logger.error("No Event found,");
-            throw new Exception("No Event found.");
+            throw new BadRequestException("No Event found.");
         }
         return eventFromSalesForce;
     }
