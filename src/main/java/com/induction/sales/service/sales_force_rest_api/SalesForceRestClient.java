@@ -39,7 +39,7 @@ public class SalesForceRestClient {
      * @return An AccessTokenResponse containing the access token to perform operation such as events.
      * @throws Exception If an error occurs during the API call.
      */
-// TODO: 17/08/23 5. use httpclient , 1. throw specific error, 1. wire mock
+// TODO: 17/08/23 5. use httpclient , 1. wire mock
     public AccessTokenResponse getToken(HttpEntity<String> httpEntity) {
         ResponseEntity<AccessTokenResponse> salesForceToken;
         try {

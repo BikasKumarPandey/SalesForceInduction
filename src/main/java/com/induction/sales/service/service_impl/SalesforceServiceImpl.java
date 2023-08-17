@@ -106,6 +106,10 @@ public class SalesforceServiceImpl implements SalesforceService {
      * @throws Exception If an error occurs during any condition pass.
      */
     public ResponseEntity<String> getEventFromSalesForce(String authorizationHeader) {
+        if (authorizationHeader.isEmpty()){
+            logger.info("Token not present");
+            throw new BadRequestException("Token not present");
+        }
         String accessToken = authorizationHeader.replace(BEARER, "");
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", BEARER + accessToken);

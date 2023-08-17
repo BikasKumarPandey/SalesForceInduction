@@ -3,8 +3,8 @@ package com.induction.sales.service;
 
 import com.induction.sales.service.sales_force_rest_api.SalesForceRestClient;
 import com.induction.sales.service.service_impl.SalesforceServiceImpl;
+import com.induction.sales.util.exception.BadRequestException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,10 +34,9 @@ public class SalesforceServiceImplTest {
     private SalesForceRestClient salesForceRestClient;
 
     @Test
-    @DisplayName("Get salesForceToken method negative test cases")
     public void getSalesforceToken_when_userName_is_empty_throw_exception() throws Exception {
 
-        assertThrows(Exception.class, () -> {
+        assertThrows(BadRequestException.class, () -> {
             salesforceService.getSalesforceToken("", PASSWORD_VALUE);
         });
     }
@@ -45,7 +44,7 @@ public class SalesforceServiceImplTest {
     @Test
     public void getSalesforceToken_when_password_is_empty_throw_exception() throws Exception {
 
-        assertThrows(Exception.class, () -> {
+        assertThrows(BadRequestException.class, () -> {
             salesforceService.getSalesforceToken(USER_NAME_VALUE, "");
         });
     }
@@ -53,7 +52,7 @@ public class SalesforceServiceImplTest {
     @Test
     public void getSalesforceToken_when_userName_is_blank_throw_exception() throws Exception {
 
-        assertThrows(Exception.class, () -> {
+        assertThrows(BadRequestException.class, () -> {
             salesforceService.getSalesforceToken(BLANK, PASSWORD_VALUE);
         });
     }
@@ -61,7 +60,7 @@ public class SalesforceServiceImplTest {
     @Test
     public void getSalesforceToken_when_password_is_blank_throw_exception() throws Exception {
 
-        assertThrows(Exception.class, () -> {
+        assertThrows(BadRequestException.class, () -> {
             salesforceService.getSalesforceToken(USER_NAME_VALUE, BLANK);
         });
     }
@@ -70,13 +69,12 @@ public class SalesforceServiceImplTest {
     public void getSalesforceToken_getToken_returns_null_throws_Exception() throws Exception {
         when(salesForceRestClient.getToken(any())).thenReturn(null);
 
-        assertThrows(Exception.class, () -> {
+        assertThrows(BadRequestException.class, () -> {
             salesforceService.getSalesforceToken(USER_NAME_VALUE, PASSWORD_VALUE);
         });
     }
 
     @Test
-    @DisplayName("Get salesForceToken method positive test cases")
     public void getSalesforceToken_when_Valid_details_given_returns_response() throws Exception {
         when(salesForceRestClient.getToken(any())).thenReturn(getAccessTokenResponse());
 
@@ -85,10 +83,9 @@ public class SalesforceServiceImplTest {
     }
 
     @Test
-    @DisplayName("Get reateEventInSalesForce method negative test cases")
     public void createEventInSalesForce_when_given_request_is_null_throws_expection() {
 
-        assertThrows(Exception.class, () -> {
+        assertThrows(BadRequestException.class, () -> {
             salesforceService.createEventInSalesForce(null, AUTHORIZATION_VALUE);
         });
 
@@ -98,13 +95,12 @@ public class SalesforceServiceImplTest {
     public void createEventInSalesForce_when_restclass_gives_null_throws_expection() throws Exception {
         when(salesForceRestClient.createEventInSalesForce(any())).thenReturn(null);
 
-        assertThrows(Exception.class, () -> {
+        assertThrows(BadRequestException.class, () -> {
             salesforceService.createEventInSalesForce(getEvent(), AUTHORIZATION_VALUE);
         });
     }
 
     @Test
-    @DisplayName("Get reateEventInSalesForce method positive test cases")
     public void createEventInSalesForce_when_restclass_gives_notNull_return_success() throws Exception {
         when(salesForceRestClient.createEventInSalesForce(any())).thenReturn(ResponseEntity.ok(TOKEN));
 
@@ -115,7 +111,7 @@ public class SalesforceServiceImplTest {
     @Test
     public void getEventFromSalesForce_when_given_invalid_token_throws_exception() throws Exception {
 
-        assertThrows(Exception.class, () -> {
+        assertThrows(NullPointerException.class, () -> {
             salesforceService.getEventFromSalesForce(null);
         });
     }
@@ -124,7 +120,7 @@ public class SalesforceServiceImplTest {
     public void getEventFromSalesForce_when_restClass_returns_null_throws_exception() throws Exception {
         when(salesForceRestClient.getEventFromSalesForce(any())).thenReturn(null);
 
-        assertThrows(Exception.class, () -> {
+        BadRequestException badRequestException = assertThrows(BadRequestException.class, () -> {
             salesforceService.getEventFromSalesForce(AUTHORIZATION_VALUE);
         });
     }
@@ -137,6 +133,14 @@ public class SalesforceServiceImplTest {
         String actualEvent = eventFromSalesForce.getBody();
 
         Assertions.assertEquals(getEvent().toString(), actualEvent);
+    }
+
+    @Test
+    public void getSalesforceToken_when_token_is_noPresent_throw_exception() throws Exception {
+
+        assertThrows(BadRequestException.class, () -> {
+            salesforceService.getEventFromSalesForce(BLANK);
+        });
     }
 
 }
