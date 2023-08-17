@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static com.induction.sales.util.MockModels.getAccessTokenResponse;
@@ -106,6 +107,7 @@ public class SalesforceServiceImplTest {
 
         ResponseEntity<String> actualValue = salesforceService.createEventInSalesForce(getEvent(), AUTHORIZATION_VALUE);
         Assertions.assertEquals(TOKEN, actualValue.getBody());
+        Assertions.assertEquals(HttpStatus.OK, actualValue.getStatusCode());
     }
 
     @Test
@@ -120,7 +122,7 @@ public class SalesforceServiceImplTest {
     public void getEventFromSalesForce_when_restClass_returns_null_throws_exception() throws Exception {
         when(salesForceRestClient.getEventFromSalesForce(any())).thenReturn(null);
 
-        BadRequestException badRequestException = assertThrows(BadRequestException.class, () -> {
+        assertThrows(BadRequestException.class, () -> {
             salesforceService.getEventFromSalesForce(AUTHORIZATION_VALUE);
         });
     }
