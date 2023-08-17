@@ -20,14 +20,4 @@ public class TestCasesConstantApp {
     public static final String ACTIVITY_DATE_TIME = "2023-08-15T10:00:00Z";
     public static final int DURATION_IN_MINUTES = 120;
 
-
-
-
-
-
-    public final static String salesForceTokenUrl = "https://login.salesforce.com/services/oauth2/token";
-    public final static String createSalesForceEventBaseURl = "https://sacumen7-dev-ed.develop.my.salesforce.com";
-    public final static String CREATE_SALESFORCE_EVENT_URL = createSalesForceEventBaseURl + "/services/data/v53.0/sobjects/Event/";
-    public final static String getSalesForceEventUrl = createSalesForceEventBaseURl + "/services/data/v58.0/query?q=SELECT Id, Subject, StartDateTime, EndDateTime FROM Event";
-
 }
