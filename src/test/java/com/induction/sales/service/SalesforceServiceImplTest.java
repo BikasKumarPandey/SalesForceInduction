@@ -108,9 +108,35 @@ public class SalesforceServiceImplTest {
     public void createEventInSalesForce_when_restclass_gives_notNull_return_success() throws Exception {
 
         when(salesForceRestClient.createEventInSalesForce(anyString(), any())).thenReturn(ResponseEntity.ok(TOKEN));
-        ResponseEntity<String> actualValue = salesforceService.createEventInSalesForce(getEvent(),AUTHORIZATION_VALUE);
-        Assertions.assertEquals(actualValue.getBody(),TOKEN);
+        ResponseEntity<String> actualValue = salesforceService.createEventInSalesForce(getEvent(), AUTHORIZATION_VALUE);
+        Assertions.assertEquals(actualValue.getBody(), TOKEN);
     }
 
+    @Test
+    public void getEventFromSalesForce_when_given_invalid_token_throws_exception() throws Exception {
+
+        assertThrows(Exception.class, () -> {
+            salesforceService.getEventFromSalesForce(null);
+        });
+    }
+
+    @Test
+    public void getEventFromSalesForce_when_restClass_returns_null_throws_exception() throws Exception {
+        when(salesForceRestClient.getEventFromSalesForce(anyString(), any())).thenReturn(null);
+
+        assertThrows(Exception.class, () -> {
+            salesforceService.getEventFromSalesForce(AUTHORIZATION_VALUE);
+        });
+    }
+
+    @Test
+    public void getEventFromSalesForce_when_restClass_returns_notNull_returns_response() throws Exception {
+        when(salesForceRestClient.getEventFromSalesForce(anyString(), any())).thenReturn(ResponseEntity.ok(getEvent().toString()));
+
+        ResponseEntity<String> eventFromSalesForce = salesforceService.getEventFromSalesForce(AUTHORIZATION_VALUE);
+        String actualEvent = eventFromSalesForce.getBody();
+
+        Assertions.assertEquals(getEvent().toString(),actualEvent);
+    }
 
 }
