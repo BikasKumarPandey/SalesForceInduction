@@ -24,6 +24,7 @@ public class SalesForceController {
      * Retrieves an access token from the SalesForce API.
      *
      * @param userName The username for authentication.
+     * @param password The user password for authentication.
      * @return An AccessTokenResponse containing the access token to perform operation such as events.
      */
     @GetMapping("tokenGenerator")

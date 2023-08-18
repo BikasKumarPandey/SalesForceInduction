@@ -83,7 +83,6 @@ public class SalesforceServiceImpl implements SalesforceService {
             logger.error("event details are not added.");
             throw new BadRequestException("Required details not added");
         }
-        // TODO: 18/08/23 check this line 
         String accessToken = authorizationHeader.replace(BEARER, "");
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set(AUTHORIZATION_KEY, BEARER + accessToken);
