@@ -21,6 +21,7 @@ import static com.induction.sales_force.util.ApplicationConstants.CLIENT_SECRET;
 import static com.induction.sales_force.util.ApplicationConstants.USER_NAME_KEY;
 import static com.induction.sales_force.util.ApplicationConstants.PASSWORD_KEY;
 import static com.induction.sales_force.util.ApplicationConstants.BEARER;
+import static com.induction.sales_force.util.ApplicationConstants.AUTHORIZATION_KEY;
 
 
 /**
@@ -84,7 +85,7 @@ public class SalesforceServiceImpl implements SalesforceService {
         }
         String accessToken = authorizationHeader.replace(BEARER, "");
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set("Authorization", BEARER + accessToken);
+        httpHeaders.set(AUTHORIZATION_KEY, BEARER + accessToken);
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Event> requestHttpEntity = new HttpEntity<>(event, httpHeaders);
 
@@ -113,7 +114,7 @@ public class SalesforceServiceImpl implements SalesforceService {
         }
         String accessToken = authorizationHeader.replace(BEARER, "");
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", BEARER + accessToken);
+        headers.set(AUTHORIZATION_KEY, BEARER + accessToken);
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Event> requestHttpEntity = new HttpEntity<>(headers);
 

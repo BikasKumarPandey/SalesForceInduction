@@ -10,6 +10,7 @@ public class ApplicationConstants {
     public static final String SALES_FORCE_GET_EVENT_URL = SALES_FORCE_EVENT_BASE_URL + "/services/data/v58.0/query?q=SELECT Id, Subject, StartDateTime, EndDateTime FROM Event";
 
 
+    public static final String AUTHORIZATION_KEY = "Authorization";
     public static final String BEARER = "Bearer ";
     public static final String GRANT_TYPE = "grant_type=password";
     public static final String CLIENT_ID = "&client_id";
