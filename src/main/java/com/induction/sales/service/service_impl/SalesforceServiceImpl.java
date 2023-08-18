@@ -1,5 +1,6 @@
 package com.induction.sales.service.service_impl;
 
+import com.induction.sales.dto.UserDetails;
 import com.induction.sales.util.exception.BadRequestException;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,13 +50,13 @@ public class SalesforceServiceImpl implements SalesforceService {
      * @throws Exception If an error occurs during any condition pass.
      */
     @Override
-    public String getSalesforceToken(String userName, String userPassword) {
-        if (userName.isEmpty() || userPassword.isEmpty()) {
+    public String getSalesforceToken(String userName, String userPassword, UserDetails userDetails) {
+       /* if (userName.isEmpty() || userPassword.isEmpty()) {
             throw new BadRequestException("Invalid username and password");
-        }
+        }*/
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        HttpEntity<String> httpEntity = new HttpEntity<>(requestBody(userName, userPassword),  httpHeaders);
+        HttpEntity<String> httpEntity = new HttpEntity<>(requestBody(userName, userPassword,userDetails),  httpHeaders);
 
         logger.info("Token requested from Salesforce");
         AccessTokenResponse response = salesForceRestClient.getToken(httpEntity);
@@ -124,12 +125,12 @@ public class SalesforceServiceImpl implements SalesforceService {
     }
 
 
-    private String requestBody(String username, String userPassword) {
+    private String requestBody(String username, String userPassword, UserDetails userDetails) {
         return GRANT_TYPE
                 + CLIENT_ID + "=" + consumerKey
                 + CLIENT_SECRET + "=" + consumerSecret
-                + USER_NAME_KEY + "=" + username
-                + PASSWORD_KEY + "=" + userPassword;
+                + USER_NAME_KEY + "=" + userDetails.getUserName()
+                + PASSWORD_KEY + "=" + userDetails.getPassword();
     }
 
 

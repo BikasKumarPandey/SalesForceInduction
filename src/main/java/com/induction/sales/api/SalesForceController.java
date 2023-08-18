@@ -1,5 +1,6 @@
 package com.induction.sales.api;
 
+import com.induction.sales.dto.UserDetails;
 import com.induction.sales.service.SalesforceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -27,8 +28,8 @@ public class SalesForceController {
      * @return An AccessTokenResponse containing the access token to perform operation such as events.
      */
     @GetMapping("tokenGenerator")
-    public ResponseEntity<String> getSalesforceToken(@RequestParam("userName") String userName, @RequestParam("password") String password) {
-        return new ResponseEntity<>(salesforceService.getSalesforceToken(userName, password), HttpStatus.OK);
+    public ResponseEntity<String> getSalesforceToken(@RequestParam(value = "userName",required = false) String userName, @RequestParam(value = "password", required = false) String password, @RequestBody UserDetails userDetails) {
+        return new ResponseEntity<>(salesforceService.getSalesforceToken(userName, password,userDetails), HttpStatus.OK);
     }
 
     /**
