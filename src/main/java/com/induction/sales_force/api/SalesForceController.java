@@ -27,14 +27,15 @@ public class SalesForceController {
      * @return An AccessTokenResponse containing the access token to perform operation such as events.
      */
     @GetMapping("tokenGenerator")
-    public ResponseEntity<String> getSalesforceToken(@RequestParam("userName") String userName, @RequestParam("password") String password) {
+    public ResponseEntity<String> getSalesforceToken(@RequestHeader("userName") String userName,
+                                                     @RequestHeader("password") String password) {
         return new ResponseEntity<>(salesforceService.getSalesforceToken(userName, password), HttpStatus.OK);
     }
 
     /**
      * create event in the SalesForce system.
      *
-     * @param event to add event details in SalesForce system.
+     * @param event               to add event details in SalesForce system.
      * @param authorizationHeader The Header containing token.
      * @return An event id and success status.
      */
