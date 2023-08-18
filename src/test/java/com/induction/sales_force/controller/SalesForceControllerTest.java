@@ -59,8 +59,8 @@ public class SalesForceControllerTest {
         when(salesforceService.getSalesforceToken(anyString(), anyString())).thenReturn(TOKEN);
 
         mockMvc.perform(get(GET_SALESFORCE_TOKEN_URL)
-                        .param(USER_NAME_KEY, USER_NAME_VALUE)
-                        .param(PASSWORD_KEY, PASSWORD_VALUE)
+                        .header(USER_NAME_KEY, USER_NAME_VALUE)
+                        .header(PASSWORD_KEY, PASSWORD_VALUE)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string(TOKEN));
