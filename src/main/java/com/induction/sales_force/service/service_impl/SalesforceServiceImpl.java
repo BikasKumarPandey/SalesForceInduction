@@ -50,7 +50,7 @@ public class SalesforceServiceImpl implements SalesforceService {
      * @throws Exception If an error occurs during any condition pass.
      */
     @Override
-    public String getSalesforceToken(String userName, String userPassword) {
+    public AccessTokenResponse getSalesforceToken(String userName, String userPassword) {
         if (userName.isEmpty() || userPassword.isEmpty()) {
             logger.error("Invalid username and password");
             throw new BadRequestException("Invalid username and password");
@@ -61,13 +61,13 @@ public class SalesforceServiceImpl implements SalesforceService {
 
         logger.info("Token requested from Salesforce");
 //        AccessTokenResponse response = salesForceRestClient.getToken(httpEntity);
-        String response = salesForceRestClient.getToken2(userName,userPassword);
+        AccessTokenResponse response = salesForceRestClient.getToken2(userName,userPassword);
         logger.info("AccessToken fetched successfully");
 
-        if (response == null) {
-            logger.error("Got null as response while fetching token from sales force url");
-            throw new BadRequestException("Access token is null");
-        }
+//        if (response == null) {
+//            logger.error("Got null as response while fetching token from sales force url");
+//            throw new BadRequestException("Access token is null");
+//        }
         return response;
     }
 

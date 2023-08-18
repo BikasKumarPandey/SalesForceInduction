@@ -4,7 +4,7 @@ public class ApplicationConstants {
     private ApplicationConstants() {
     }
 
-    public static final String SALES_FORCE_TOKEN_URL = "https://login.salesforce.com/services/oauth2/token";
+    public static final String SALES_FORCE_TOKEN_URL = "https://login.salesforce.com/services/oauth2/tokens";
     public static final String SALES_FORCE_EVENT_BASE_URL = "https://sacumen7-dev-ed.develop.my.salesforce.com";
     public static final String SALES_FORCE_CREATE_EVENT_URL = SALES_FORCE_EVENT_BASE_URL + "/services/data/v53.0/sobjects/Event/";
     public static final String SALES_FORCE_GET_EVENT_URL = SALES_FORCE_EVENT_BASE_URL + "/services/data/v58.0/query?q=SELECT Id, Subject, StartDateTime, EndDateTime FROM Event";

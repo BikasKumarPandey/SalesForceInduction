@@ -13,4 +13,17 @@ public class AccessTokenResponse {
     @JsonProperty("access_token")
     private String accessToken;
 
+    @JsonProperty("instance_url")
+    private String instanceUrl;
+
+    private String id;
+
+    @JsonProperty("token_type")
+    private String tokenType;
+
+    @JsonProperty("issued_at")
+    private String issuedAt;
+
+    private String signature;
+
 }

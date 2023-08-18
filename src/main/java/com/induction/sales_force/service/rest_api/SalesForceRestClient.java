@@ -1,5 +1,6 @@
 package com.induction.sales_force.service.rest_api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.induction.sales_force.dto.AccessTokenResponse;
 import com.induction.sales_force.dto.Event;
 import com.induction.sales_force.util.exception.ResourceNotFoundException;
@@ -126,48 +127,57 @@ public class SalesForceRestClient {
     }
 
 
-        public String getToken2(String userName, String userPassword) {
-            String responseBody;
-            try {
-                HttpClient httpClient = HttpClient.newBuilder().build();
+    public AccessTokenResponse getToken2(String userName, String userPassword) {
+        AccessTokenResponse accessTokenDTO = null;
+        HttpResponse<String> response;
+        ObjectMapper objectMapper = new ObjectMapper();
 
-                HttpHeaders httpHeaders = new HttpHeaders();
-                httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        try {
+            HttpClient httpClient = HttpClient.newBuilder().build();
 
-                String requestBody = requestBody(userName, userPassword);
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-                HttpRequest httpRequest = HttpRequest.newBuilder()
-                        .uri(new URI(SALES_FORCE_TOKEN_URL))
-                        .header("Content-Type", "application/x-www-form-urlencoded")
-                        .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-                        .build();
+            String requestBody = requestBody(userName, userPassword);
 
-                HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            HttpRequest httpRequest = HttpRequest.newBuilder()
+                    .uri(new URI(SALES_FORCE_TOKEN_URL))
+                    .header("Content-Type", "application/x-www-form-urlencoded")
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .build();
 
-                if (response.statusCode() == 200) {
-                    responseBody= response.body();
-                    System.out.println("responseBody is her e presented "+responseBody);
-                    // Assuming you have a class AccessTokenResponse to deserialize the response
-                } else {
-                    // Handle non-200 status codes
-                    return null;
-                }
-            } catch (IOException | InterruptedException | URISyntaxException e) {
-                // Handle exceptions
-                return null;
-            }
-            return responseBody;
+            response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+
+
+        } catch (IOException | InterruptedException | URISyntaxException e) {
+            e.printStackTrace();
+            logger.error("Error");
+            throw new ResourceNotFoundException("Check above line");
         }
 
-        // Other methods and helper functions...
+        if (response.statusCode() == 200) {
+            String responseBody = response.body();
+            accessTokenDTO = objectMapper.readValue(responseBody, AccessTokenResponse.class);
 
-        private String requestBody(String username, String userPassword) {
-            return GRANT_TYPE
-                    + "&" + CLIENT_ID + "=" + consumerKey
-                    + "&" + CLIENT_SECRET + "=" + consumerSecret
-                    + "&" + USER_NAME_KEY + "=" + username
-                    + "&" + PASSWORD_KEY + "=" + userPassword;
+        } else if (response.statusCode() == 400) {
+            logger.error("Authentication failed.");
+            throw new UnauthorizedAccessException("Invalid grant: Authentication failure");
+        } else if (response.statusCode() == 404) {
+            logger.error("Invalid url get token to communicate with sales force api");
+            throw new ResourceNotFoundException("Error calling Salesforce API url");
         }
+        return accessTokenDTO;
     }
+
+    // Other methods and helper functions...
+
+    private String requestBody(String username, String userPassword) {
+        return GRANT_TYPE
+                + "&" + CLIENT_ID + "=" + consumerKey
+                + "&" + CLIENT_SECRET + "=" + consumerSecret
+                + "&" + USER_NAME_KEY + "=" + username
+                + "&" + PASSWORD_KEY + "=" + userPassword;
+    }
+}
 
 
