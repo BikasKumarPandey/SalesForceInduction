@@ -60,14 +60,15 @@ public class SalesforceServiceImpl implements SalesforceService {
         HttpEntity<String> httpEntity = new HttpEntity<>(requestBody(userName, userPassword),  httpHeaders);
 
         logger.info("Token requested from Salesforce");
-        AccessTokenResponse response = salesForceRestClient.getToken(httpEntity);
+//        AccessTokenResponse response = salesForceRestClient.getToken(httpEntity);
+        String response = salesForceRestClient.getToken2(userName,userPassword);
         logger.info("AccessToken fetched successfully");
 
         if (response == null) {
             logger.error("Got null as response while fetching token from sales force url");
             throw new BadRequestException("Access token is null");
         }
-        return response.getAccessToken();
+        return response;
     }
 
     /**
