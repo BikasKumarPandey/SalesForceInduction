@@ -1,6 +1,6 @@
-package com.induction.sales.service.service_impl;
+package com.induction.sales_force.service.service_impl;
 
-import com.induction.sales.util.exception.BadRequestException;
+import com.induction.sales_force.util.exception.BadRequestException;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,17 +10,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.induction.sales.dto.Event;
-import com.induction.sales.service.sales_force_rest_api.SalesForceRestClient;
-import com.induction.sales.service.SalesforceService;
-import com.induction.sales.dto.AccessTokenResponse;
+import com.induction.sales_force.dto.Event;
+import com.induction.sales_force.service.rest_api.SalesForceRestClient;
+import com.induction.sales_force.service.SalesforceService;
+import com.induction.sales_force.dto.AccessTokenResponse;
 
-import static com.induction.sales.util.ApplicationConstants.GRANT_TYPE;
-import static com.induction.sales.util.ApplicationConstants.CLIENT_ID;
-import static com.induction.sales.util.ApplicationConstants.CLIENT_SECRET;
-import static com.induction.sales.util.ApplicationConstants.USER_NAME_KEY;
-import static com.induction.sales.util.ApplicationConstants.PASSWORD_KEY;
-import static com.induction.sales.util.ApplicationConstants.BEARER;
+import static com.induction.sales_force.util.ApplicationConstants.GRANT_TYPE;
+import static com.induction.sales_force.util.ApplicationConstants.CLIENT_ID;
+import static com.induction.sales_force.util.ApplicationConstants.CLIENT_SECRET;
+import static com.induction.sales_force.util.ApplicationConstants.USER_NAME_KEY;
+import static com.induction.sales_force.util.ApplicationConstants.PASSWORD_KEY;
+import static com.induction.sales_force.util.ApplicationConstants.BEARER;
 
 
 /**
@@ -51,6 +51,7 @@ public class SalesforceServiceImpl implements SalesforceService {
     @Override
     public String getSalesforceToken(String userName, String userPassword) {
         if (userName.isEmpty() || userPassword.isEmpty()) {
+            logger.error("Invalid username and password");
             throw new BadRequestException("Invalid username and password");
         }
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -107,7 +108,7 @@ public class SalesforceServiceImpl implements SalesforceService {
      */
     public ResponseEntity<String> getEventFromSalesForce(String authorizationHeader) {
         if (authorizationHeader.isEmpty()){
-            logger.info("Token not present");
+            logger.error("Token not present");
             throw new BadRequestException("Token not present");
         }
         String accessToken = authorizationHeader.replace(BEARER, "");

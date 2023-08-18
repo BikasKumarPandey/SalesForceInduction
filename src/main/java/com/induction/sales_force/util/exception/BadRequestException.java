@@ -1,4 +1,4 @@
-package com.induction.sales.util.exception;
+package com.induction.sales_force.util.exception;
 
 public class BadRequestException extends RuntimeException {
     public BadRequestException(String message) {

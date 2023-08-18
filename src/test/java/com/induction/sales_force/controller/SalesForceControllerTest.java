@@ -1,10 +1,10 @@
-package com.induction.sales.controller;
+package com.induction.sales_force.controller;
 
 
-import com.induction.sales.api.SalesForceController;
+import com.induction.sales_force.api.SalesForceController;
 import org.junit.jupiter.api.extension.ExtendWith;
-import com.induction.sales.service.SalesforceService;
-import com.induction.sales.dto.Event;
+import com.induction.sales_force.service.SalesforceService;
+import com.induction.sales_force.dto.Event;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -17,7 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import static com.induction.sales.util.MockModels.getEvent;
+import static com.induction.sales_force.util.MockModels.getEvent;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -28,15 +28,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
-import static com.induction.sales.util.TestCasesConstantApp.GET_SALESFORCE_TOKEN_URL;
-import static com.induction.sales.util.TestCasesConstantApp.SALESFORCE_EVENT_URL;
-import static com.induction.sales.util.TestCasesConstantApp.AUTHORIZATION_KEY;
-import static com.induction.sales.util.TestCasesConstantApp.AUTHORIZATION_VALUE;
-import static com.induction.sales.util.TestCasesConstantApp.USER_NAME_KEY;
-import static com.induction.sales.util.TestCasesConstantApp.USER_NAME_VALUE;
-import static com.induction.sales.util.TestCasesConstantApp.TOKEN;
-import static com.induction.sales.util.TestCasesConstantApp.PASSWORD_KEY;
-import static com.induction.sales.util.TestCasesConstantApp.PASSWORD_VALUE;
+import static com.induction.sales_force.util.TestCasesConstantApp.GET_SALESFORCE_TOKEN_URL;
+import static com.induction.sales_force.util.TestCasesConstantApp.SALESFORCE_EVENT_URL;
+import static com.induction.sales_force.util.TestCasesConstantApp.AUTHORIZATION_KEY;
+import static com.induction.sales_force.util.TestCasesConstantApp.AUTHORIZATION_VALUE;
+import static com.induction.sales_force.util.TestCasesConstantApp.USER_NAME_KEY;
+import static com.induction.sales_force.util.TestCasesConstantApp.USER_NAME_VALUE;
+import static com.induction.sales_force.util.TestCasesConstantApp.TOKEN;
+import static com.induction.sales_force.util.TestCasesConstantApp.PASSWORD_KEY;
+import static com.induction.sales_force.util.TestCasesConstantApp.PASSWORD_VALUE;
 
 @ExtendWith(MockitoExtension.class)
 public class SalesForceControllerTest {

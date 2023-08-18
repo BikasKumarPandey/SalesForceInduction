@@ -1,4 +1,4 @@
-package com.induction.sales.util.exception;
+package com.induction.sales_force.util.exception;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

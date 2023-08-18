@@ -1,4 +1,4 @@
-package com.induction.sales.util.exception;
+package com.induction.sales_force.util.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(String message) {

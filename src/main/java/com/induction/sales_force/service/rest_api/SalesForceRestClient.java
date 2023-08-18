@@ -1,10 +1,10 @@
-package com.induction.sales.service.sales_force_rest_api;
+package com.induction.sales_force.service.rest_api;
 
-import com.induction.sales.dto.AccessTokenResponse;
-import com.induction.sales.dto.Event;
-import com.induction.sales.util.exception.ResourceNotFoundException;
-import com.induction.sales.util.exception.BadRequestException;
-import com.induction.sales.util.exception.UnauthorizedAccessException;
+import com.induction.sales_force.dto.AccessTokenResponse;
+import com.induction.sales_force.dto.Event;
+import com.induction.sales_force.util.exception.ResourceNotFoundException;
+import com.induction.sales_force.util.exception.BadRequestException;
+import com.induction.sales_force.util.exception.UnauthorizedAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpMethod;
 
-import static com.induction.sales.util.ApplicationConstants.SALES_FORCE_TOKEN_URL;
-import static com.induction.sales.util.ApplicationConstants.SALES_FORCE_GET_EVENT_URL;
-import static com.induction.sales.util.ApplicationConstants.SALES_FORCE_CREATE_EVENT_URL;
+import static com.induction.sales_force.util.ApplicationConstants.SALES_FORCE_TOKEN_URL;
+import static com.induction.sales_force.util.ApplicationConstants.SALES_FORCE_GET_EVENT_URL;
+import static com.induction.sales_force.util.ApplicationConstants.SALES_FORCE_CREATE_EVENT_URL;
 
 /**
  * A service class for interacting with the SalesForce REST API.
@@ -45,18 +45,18 @@ public class SalesForceRestClient {
         try {
             salesForceToken = restTemplate.postForEntity(SALES_FORCE_TOKEN_URL, httpEntity, AccessTokenResponse.class);
         } catch (HttpClientErrorException e) {
-            logger.info("Exception occurred while communicating with sales force api");
+            logger.error("Exception occurred while communicating with sales force api");
             if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
                 String responseBody = e.getResponseBodyAsString();
 
                 if (responseBody.contains("invalid_grant")) {
-                    logger.info("Authentication failed.");
+                    logger.error("Authentication failed.");
                     throw new UnauthorizedAccessException("Invalid grant: Authentication failure");
                 }
-                logger.info("Bad Request.");
+                logger.error("Bad Request.");
                 throw new BadRequestException("Bad Request: " + responseBody);
             } else {
-                logger.info("Invalid url get token to communicate with sales force api");
+                logger.error("Invalid url get token to communicate with sales force api");
                 throw new ResourceNotFoundException("Error calling Salesforce API url");
             }
         }
@@ -76,15 +76,15 @@ public class SalesForceRestClient {
         try {
             createdEvent = restTemplate.exchange(SALES_FORCE_CREATE_EVENT_URL, HttpMethod.POST, requestHttpEntity, String.class);
         } catch (HttpClientErrorException e) {
-            logger.info("Exception occurred while communicating with sales force api");
+            logger.error("Exception occurred while communicating with sales force api");
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-                logger.info("Invalid Bearer token");
+                logger.error("Invalid Bearer token");
                 throw new UnauthorizedAccessException("Invalid Bearer token");
             } else if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                logger.info("Invalid create event url to communicate with sales force api");
+                logger.error("Invalid create event url to communicate with sales force api");
                 throw new ResourceNotFoundException("Invalid sales force create event url ");
             }
-            logger.info("Bad Request.");
+            logger.error("Bad Request.");
             throw new BadRequestException("Bad Request");
         }
         return createdEvent;
@@ -103,15 +103,15 @@ public class SalesForceRestClient {
         try {
             eventsFromSalesForce = restTemplate.exchange(SALES_FORCE_GET_EVENT_URL, HttpMethod.GET, requestHttpEntity, String.class);
         } catch (HttpClientErrorException e) {
-            logger.info("Exception occurred while communicating with sales force api");
+            logger.error("Exception occurred while communicating with sales force api");
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-                logger.info("Invalid Bearer token");
+                logger.error("Invalid Bearer token");
                 throw new UnauthorizedAccessException("Invalid Bearer token");
             } else if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                logger.info("Invalid get event url to communicate with sales force api");
+                logger.error("Invalid get event url to communicate with sales force api");
                 throw new ResourceNotFoundException("Invalid sales force get event url ");
             }
-            logger.info("Bad Request.");
+            logger.error("Bad Request.");
             throw new BadRequestException("Bad Request");
         }
         return eventsFromSalesForce;

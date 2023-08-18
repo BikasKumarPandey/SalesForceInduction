@@ -1,9 +1,9 @@
-package com.induction.sales.api;
+package com.induction.sales_force.api;
 
-import com.induction.sales.service.SalesforceService;
+import com.induction.sales_force.service.SalesforceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
-import com.induction.sales.dto.Event;
+import com.induction.sales_force.dto.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;

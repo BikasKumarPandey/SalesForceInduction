@@ -1,4 +1,4 @@
-package com.induction.sales.dto;
+package com.induction.sales_force.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

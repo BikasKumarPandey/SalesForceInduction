@@ -1,9 +1,9 @@
-package com.induction.sales.service;
+package com.induction.sales_force.service;
 
 
-import com.induction.sales.service.sales_force_rest_api.SalesForceRestClient;
-import com.induction.sales.service.service_impl.SalesforceServiceImpl;
-import com.induction.sales.util.exception.BadRequestException;
+import com.induction.sales_force.service.rest_api.SalesForceRestClient;
+import com.induction.sales_force.service.service_impl.SalesforceServiceImpl;
+import com.induction.sales_force.util.exception.BadRequestException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,17 +13,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static com.induction.sales.util.MockModels.getAccessTokenResponse;
-import static com.induction.sales.util.MockModels.getEvent;
+import static com.induction.sales_force.util.MockModels.getAccessTokenResponse;
+import static com.induction.sales_force.util.MockModels.getEvent;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import static com.induction.sales.util.TestCasesConstantApp.PASSWORD_VALUE;
-import static com.induction.sales.util.TestCasesConstantApp.USER_NAME_VALUE;
-import static com.induction.sales.util.TestCasesConstantApp.BLANK;
-import static com.induction.sales.util.TestCasesConstantApp.TOKEN;
-import static com.induction.sales.util.TestCasesConstantApp.AUTHORIZATION_VALUE;
+import static com.induction.sales_force.util.TestCasesConstantApp.PASSWORD_VALUE;
+import static com.induction.sales_force.util.TestCasesConstantApp.USER_NAME_VALUE;
+import static com.induction.sales_force.util.TestCasesConstantApp.BLANK;
+import static com.induction.sales_force.util.TestCasesConstantApp.TOKEN;
+import static com.induction.sales_force.util.TestCasesConstantApp.AUTHORIZATION_VALUE;
 
 @ExtendWith(MockitoExtension.class)
 public class SalesforceServiceImplTest {

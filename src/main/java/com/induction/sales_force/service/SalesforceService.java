@@ -1,6 +1,6 @@
-package com.induction.sales.service;
+package com.induction.sales_force.service;
 
-import com.induction.sales.dto.Event;
+import com.induction.sales_force.dto.Event;
 import org.springframework.http.ResponseEntity;
 
 public interface SalesforceService {

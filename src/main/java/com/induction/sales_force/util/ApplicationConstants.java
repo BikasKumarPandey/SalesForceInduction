@@ -1,4 +1,4 @@
-package com.induction.sales.util;
+package com.induction.sales_force.util;
 
 public class ApplicationConstants {
     private ApplicationConstants() {
