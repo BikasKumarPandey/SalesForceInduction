@@ -128,46 +128,36 @@ public class SalesForceRestClient {
 
 
     public AccessTokenResponse getToken2(String userName, String userPassword) {
-        AccessTokenResponse accessTokenDTO = null;
-        HttpResponse<String> response;
-        ObjectMapper objectMapper = new ObjectMapper();
+        HttpClient httpClient = HttpClient.newBuilder().build();
+
+        String requestBody = requestBody(userName, userPassword);
 
         try {
-            HttpClient httpClient = HttpClient.newBuilder().build();
-
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-            String requestBody = requestBody(userName, userPassword);
-
             HttpRequest httpRequest = HttpRequest.newBuilder()
                     .uri(new URI(SALES_FORCE_TOKEN_URL))
                     .header("Content-Type", "application/x-www-form-urlencoded")
                     .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();
 
-            response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
 
-
-        } catch (IOException | InterruptedException | URISyntaxException e) {
-            e.printStackTrace();
-            logger.error("Error");
-            throw new ResourceNotFoundException("Check above line");
+            switch (response.statusCode()) {
+                case 200:
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    String responseBody = response.body();
+                    return objectMapper.readValue(responseBody, AccessTokenResponse.class);
+                case 400:
+                    throw new UnauthorizedAccessException("Invalid grant: Authentication failure");
+                case 404:
+                    throw new ResourceNotFoundException("Error calling Salesforce API url");
+                default:
+                    throw new RuntimeException("Unexpected response code: " + response.statusCode());
+            }
+        } catch (URISyntaxException | IOException | InterruptedException e) {
+            throw new ResourceNotFoundException("Error occurred either in URI, send, or readValue method.");
         }
-
-        if (response.statusCode() == 200) {
-            String responseBody = response.body();
-            accessTokenDTO = objectMapper.readValue(responseBody, AccessTokenResponse.class);
-
-        } else if (response.statusCode() == 400) {
-            logger.error("Authentication failed.");
-            throw new UnauthorizedAccessException("Invalid grant: Authentication failure");
-        } else if (response.statusCode() == 404) {
-            logger.error("Invalid url get token to communicate with sales force api");
-            throw new ResourceNotFoundException("Error calling Salesforce API url");
-        }
-        return accessTokenDTO;
     }
+
 
     // Other methods and helper functions...
 
