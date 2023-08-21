@@ -21,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -45,6 +46,10 @@ public class SalesForceRestClient {
 
     @Autowired
     public RestTemplate restTemplate;
+
+    @Autowired
+    public HttpClient httpClient;
+    ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * Retrieves an access token from the SalesForce API.
@@ -137,8 +142,6 @@ public class SalesForceRestClient {
 
     public AccessTokenResponse getToken2(String userName, String userPassword) {
         String requestBody = requestBody(userName, userPassword);
-        HttpClient httpClient = HttpClient.newBuilder().build();
-
         try {
             HttpRequest httpRequest = HttpRequest.newBuilder()
                     .uri(new URI(SALES_FORCE_TOKEN_URL))
@@ -149,7 +152,6 @@ public class SalesForceRestClient {
             HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
             switch (response.statusCode()) {
                 case 200:
-                    ObjectMapper objectMapper = new ObjectMapper();
                     String responseBody = response.body();
                     return objectMapper.readValue(responseBody, AccessTokenResponse.class);
                 case 400:
@@ -166,16 +168,14 @@ public class SalesForceRestClient {
 
 
     public ResponseEntity<String> createEventInSalesForce2(HttpEntity<Event> requestHttpEntity, String authorizationHeader) {
-        HttpClient httpClient = HttpClient.newBuilder().build();
 
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
             String requestBody = objectMapper.writeValueAsString(requestHttpEntity.getBody());
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI(SALES_FORCE_CREATE_EVENT_URL))
-                    .header("Authorization", authorizationHeader)
-                    .header("Content-Type", "application/json")
+                    .header(AUTHORIZATION_KEY, authorizationHeader)
+                    .header(CONTENT_TYPE, CONTENT_TYPE_JSON)
                     .POST(HttpRequest.BodyPublishers.ofString(requestBody, StandardCharsets.UTF_8))
                     .build();
 
@@ -194,6 +194,49 @@ public class SalesForceRestClient {
             throw new SalesForceApplicationException("Error occurred either in URI, send, or readValue method.");
         }
     }
+
+    public ResponseEntity<String> getEventFromSalesForce2(HttpEntity<Event> requestHttpEntity) {
+        try {
+            String authorizationHeaderValue = requestHttpEntity.getHeaders().getFirst(AUTHORIZATION_KEY);
+            if (authorizationHeaderValue == null) {
+                throw new UnauthorizedAccessException("Authorization header is missing");
+            }
+
+
+            String queryParameterValue = URLEncoder.encode(QUERY, StandardCharsets.UTF_8.toString());
+            String baseUrl = SALES_FORCE_EVENT_BASE_URL;
+            String pathSegment = PATH_SEGMENT + "query?";
+            String queryParameter = "q=" + queryParameterValue;
+
+            String fullUri = baseUrl + pathSegment + queryParameter;
+
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(fullUri))
+                    .header(AUTHORIZATION_KEY, authorizationHeaderValue)
+                    .header(CONTENT_TYPE, CONTENT_TYPE_JSON)
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            switch (response.statusCode()) {
+                case 200: // Use 200 OK for successful GET requests
+                    return ResponseEntity.ok(response.body());
+                case 401:
+                    throw new UnauthorizedAccessException("Invalid Bearer token");
+                case 404:
+                    throw new ResourceNotFoundException("Invalid Salesforce create event URL");
+                default:
+                    throw new BadRequestException("Bad Request");
+            }
+        } catch (IOException | InterruptedException | URISyntaxException e) {
+            // Log the exception and handle it accordingly
+            e.printStackTrace();
+            throw new BadRequestException(e.getMessage());
+        }
+    }
+
 
     private String requestBody(String username, String userPassword) {
         return GRANT_TYPE

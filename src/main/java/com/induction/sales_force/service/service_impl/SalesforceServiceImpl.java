@@ -60,8 +60,8 @@ public class SalesforceServiceImpl implements SalesforceService {
         HttpEntity<String> httpEntity = new HttpEntity<>(requestBody(userName, userPassword),  httpHeaders);
 
         logger.info("Token requested from Salesforce");
-//        AccessTokenResponse response = salesForceRestClient.getToken(httpEntity);
-        AccessTokenResponse response = salesForceRestClient.getToken2(userName,userPassword);
+        AccessTokenResponse response = salesForceRestClient.getToken(httpEntity);
+//        AccessTokenResponse response = salesForceRestClient.getToken2(userName,userPassword);
         logger.info("AccessToken fetched successfully");
 
 //        if (response == null) {
@@ -91,8 +91,8 @@ public class SalesforceServiceImpl implements SalesforceService {
         HttpEntity<Event> requestHttpEntity = new HttpEntity<>(event, httpHeaders);
 
         logger.info("Requested to create event in SalesForce");
-//        ResponseEntity<String> eventInSalesForce = salesForceRestClient.createEventInSalesForce(requestHttpEntity);
-        ResponseEntity<String> eventInSalesForce = salesForceRestClient.createEventInSalesForce2(requestHttpEntity,authorizationHeader);
+        ResponseEntity<String> eventInSalesForce = salesForceRestClient.createEventInSalesForce(requestHttpEntity);
+//        ResponseEntity<String> eventInSalesForce = salesForceRestClient.createEventInSalesForce2(requestHttpEntity,authorizationHeader);
         logger.info("Event created successfully in SalesForce");
 
         if (eventInSalesForce == null) {
@@ -122,6 +122,8 @@ public class SalesforceServiceImpl implements SalesforceService {
 
         logger.info("Requested Events from SalesForce.");
         ResponseEntity<String> eventFromSalesForce = salesForceRestClient.getEventFromSalesForce(requestHttpEntity);
+//        ResponseEntity<String> eventFromSalesForce = salesForceRestClient.getEventFromSalesForce2(requestHttpEntity);
+
         logger.info("Fetched Events from SalesForce successfully.");
 
         if (eventFromSalesForce == null) {
