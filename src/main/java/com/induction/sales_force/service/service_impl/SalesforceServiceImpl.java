@@ -64,10 +64,10 @@ public class SalesforceServiceImpl implements SalesforceService {
 //        AccessTokenResponse response = salesForceRestClient.getToken2(userName,userPassword);
         logger.info("AccessToken fetched successfully");
 
-//        if (response == null) {
-//            logger.error("Got null as response while fetching token from sales force url");
-//            throw new BadRequestException("Access token is null");
-//        }
+        if (response == null) {
+            logger.error("Got null as response while fetching token from sales force url");
+            throw new BadRequestException("Access token is null");
+        }
         return response;
     }
 

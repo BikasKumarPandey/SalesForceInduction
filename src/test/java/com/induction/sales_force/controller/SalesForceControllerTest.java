@@ -2,6 +2,7 @@ package com.induction.sales_force.controller;
 
 
 import com.induction.sales_force.api.SalesForceController;
+import com.induction.sales_force.dto.AccessTokenResponse;
 import org.junit.jupiter.api.extension.ExtendWith;
 import com.induction.sales_force.service.SalesforceService;
 import com.induction.sales_force.dto.Event;
@@ -17,6 +18,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import static com.induction.sales_force.util.MockModels.getAccessTokenResponse;
 import static com.induction.sales_force.util.MockModels.getEvent;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -56,14 +59,16 @@ public class SalesForceControllerTest {
 
     @Test
     public void getSalesforceTokenTest() throws Exception {
-        when(salesforceService.getSalesforceToken(anyString(), anyString())).thenReturn(TOKEN);
+        when(salesforceService.getSalesforceToken(anyString(), anyString())).thenReturn(getAccessTokenResponse());
+        ObjectMapper objectMapper = new ObjectMapper();
+        String expectedJson = objectMapper.writeValueAsString(getAccessTokenResponse());
 
         mockMvc.perform(get(GET_SALESFORCE_TOKEN_URL)
                         .header(USER_NAME_KEY, USER_NAME_VALUE)
                         .header(PASSWORD_KEY, PASSWORD_VALUE)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().string(TOKEN));
+                .andExpect(content().json(expectedJson));
     }
 
     @Test

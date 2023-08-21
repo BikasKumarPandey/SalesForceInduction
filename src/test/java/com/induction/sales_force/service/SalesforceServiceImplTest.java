@@ -1,6 +1,7 @@
 package com.induction.sales_force.service;
 
 
+import com.induction.sales_force.dto.AccessTokenResponse;
 import com.induction.sales_force.service.rest_api.SalesForceRestClient;
 import com.induction.sales_force.service.service_impl.SalesforceServiceImpl;
 import com.induction.sales_force.util.exception.BadRequestException;
@@ -79,8 +80,8 @@ public class SalesforceServiceImplTest {
     public void getSalesforceToken_when_Valid_details_given_returns_response() throws Exception {
         when(salesForceRestClient.getToken(any())).thenReturn(getAccessTokenResponse());
 
-        String actualToken = salesforceService.getSalesforceToken(USER_NAME_VALUE, PASSWORD_VALUE);
-        Assertions.assertEquals(TOKEN, actualToken);
+        AccessTokenResponse actualToken = salesforceService.getSalesforceToken(USER_NAME_VALUE, PASSWORD_VALUE);
+        Assertions.assertEquals(TOKEN, actualToken.getAccessToken());
     }
 
     @Test

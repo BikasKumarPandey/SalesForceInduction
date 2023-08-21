@@ -18,6 +18,6 @@ public class MockModels {
     }
 
     public static AccessTokenResponse getAccessTokenResponse() {
-        return new AccessTokenResponse(TOKEN);
+        return new AccessTokenResponse("Random_token","RANDOM_URL","RANDOM_ID","RANDOM_TOKEN_TYPE","2023-08-15T10:00:00.000+0000","RANDOM_SIGNATURE");
     }
 }
