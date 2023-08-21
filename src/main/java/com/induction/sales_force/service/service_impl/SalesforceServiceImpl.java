@@ -87,11 +87,12 @@ public class SalesforceServiceImpl implements SalesforceService {
         String accessToken = authorizationHeader.replace(BEARER, "");
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set(AUTHORIZATION_KEY, BEARER + accessToken);
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+//        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Event> requestHttpEntity = new HttpEntity<>(event, httpHeaders);
 
         logger.info("Requested to create event in SalesForce");
-        ResponseEntity<String> eventInSalesForce = salesForceRestClient.createEventInSalesForce(requestHttpEntity);
+//        ResponseEntity<String> eventInSalesForce = salesForceRestClient.createEventInSalesForce(requestHttpEntity);
+        ResponseEntity<String> eventInSalesForce = salesForceRestClient.createEventInSalesForce2(requestHttpEntity,authorizationHeader);
         logger.info("Event created successfully in SalesForce");
 
         if (eventInSalesForce == null) {

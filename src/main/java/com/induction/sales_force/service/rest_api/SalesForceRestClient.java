@@ -1,10 +1,12 @@
 package com.induction.sales_force.service.rest_api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.induction.sales_force.dto.AccessTokenResponse;
 import com.induction.sales_force.dto.Event;
 import com.induction.sales_force.util.exception.ResourceNotFoundException;
 import com.induction.sales_force.util.exception.BadRequestException;
+import com.induction.sales_force.util.exception.SalesForceApplicationException;
 import com.induction.sales_force.util.exception.UnauthorizedAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +24,9 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
 
 import static com.induction.sales_force.util.ApplicationConstants.*;
 
@@ -126,11 +131,13 @@ public class SalesForceRestClient {
         return eventsFromSalesForce;
     }
 
+    /*
+     * @Version 2
+     * */
 
     public AccessTokenResponse getToken2(String userName, String userPassword) {
-        HttpClient httpClient = HttpClient.newBuilder().build();
-
         String requestBody = requestBody(userName, userPassword);
+        HttpClient httpClient = HttpClient.newBuilder().build();
 
         try {
             HttpRequest httpRequest = HttpRequest.newBuilder()
@@ -140,7 +147,6 @@ public class SalesForceRestClient {
                     .build();
 
             HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-
             switch (response.statusCode()) {
                 case 200:
                     ObjectMapper objectMapper = new ObjectMapper();
@@ -154,12 +160,40 @@ public class SalesForceRestClient {
                     throw new RuntimeException("Unexpected response code: " + response.statusCode());
             }
         } catch (URISyntaxException | IOException | InterruptedException e) {
-            throw new ResourceNotFoundException("Error occurred either in URI, send, or readValue method.");
+            throw new SalesForceApplicationException("Error occurred either in URI, send, or readValue method.");
         }
     }
 
 
-    // Other methods and helper functions...
+    public ResponseEntity<String> createEventInSalesForce2(HttpEntity<Event> requestHttpEntity, String authorizationHeader) {
+        HttpClient httpClient = HttpClient.newBuilder().build();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String requestBody = objectMapper.writeValueAsString(requestHttpEntity.getBody());
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(SALES_FORCE_CREATE_EVENT_URL))
+                    .header("Authorization", authorizationHeader)
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody, StandardCharsets.UTF_8))
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            switch (response.statusCode()) {
+                case 201:
+                    return ResponseEntity.ok(response.body());
+                case 401:
+                    throw new UnauthorizedAccessException("Invalid Bearer token");
+                case 404:
+                    throw new ResourceNotFoundException("Invalid sales force create event URL");
+                default:
+                    throw new BadRequestException("Bad Request");
+            }
+        } catch (URISyntaxException | IOException | InterruptedException e) {
+            throw new SalesForceApplicationException("Error occurred either in URI, send, or readValue method.");
+        }
+    }
 
     private String requestBody(String username, String userPassword) {
         return GRANT_TYPE

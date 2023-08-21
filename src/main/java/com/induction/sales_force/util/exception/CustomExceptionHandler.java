@@ -26,4 +26,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
+    @ExceptionHandler(value = {SalesForceApplicationException.class})
+    protected ResponseEntity<Object> salesForceApplicationException(ResourceNotFoundException ex, WebRequest request) {
+        return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
 }
