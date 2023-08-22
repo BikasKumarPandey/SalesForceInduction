@@ -1,31 +1,41 @@
 package com.induction.sales_force.service.wire_mock;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.common.ConsoleNotifier;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.induction.sales_force.dto.AccessTokenResponse;
+import com.induction.sales_force.service.rest_api.SalesForceRestClient;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static com.induction.sales_force.util.ApplicationConstants.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.induction.sales_force.util.ApplicationConstants.SALES_FORCE_TOKEN_URL;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doReturn;
 
 public class SalesForceRestClientTest {
 
     private WireMockServer wireMockServer;
+    @Spy
     private RestTemplate restTemplate;
+    @InjectMocks
+    @Spy
+    private SalesForceRestClient salesForceRestClient;
 
     @BeforeEach
     public void setUp() {
-        // Start WireMock on a specific port (e.g., 9090)
+        MockitoAnnotations.initMocks(this);
         wireMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig()
                 .port(9090)
                 .notifier(new ConsoleNotifier(true))); // Optional, for debugging
@@ -38,13 +48,11 @@ public class SalesForceRestClientTest {
 
     @AfterEach
     public void tearDown() {
-        // Stop WireMock after each test
         wireMockServer.stop();
     }
 
     @Test
     public void getToken_when_Invalid_input_throws_exception() {
-        // Define a WireMock stub for the Salesforce token endpoint
         wireMockServer.stubFor(post(urlEqualTo("/services/oauth2/token"))
                 .withHeader("Accept", equalTo("application/json"))
                 .willReturn(aResponse()
@@ -53,18 +61,31 @@ public class SalesForceRestClientTest {
                         .withBody("{\"error\":\"invalid_grant\",\"error_description\":\"authentication failure\"}")
                 ));
 
-        // Make a POST request to the mock Salesforce token endpoint
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         HttpEntity<String> httpEntity = new HttpEntity<>("grant_type=password&client_id=asgdghdf&client_secret=sadgagsd&username=username&password=password", httpHeaders);
 
-        // The restTemplate.exchange() call will throw a HttpClientErrorException$BadRequest
-        // because the response is configured to be a 400 Bad Request with an "invalid_grant" error.
         assertThrows(HttpClientErrorException.BadRequest.class, () -> {
             restTemplate.exchange(SALES_FORCE_TOKEN_URL, HttpMethod.POST, httpEntity, String.class);
         });
+    }
 
-        // Add assertions for your specific error handling logic if needed.
+    @Test
+    public void testGetTokenSuccess() {
+        wireMockServer.stubFor(post(urlEqualTo("/services/oauth2/token"))
+                .withHeader("Content-Type", equalTo(MediaType.APPLICATION_FORM_URLENCODED_VALUE))
+                .willReturn(aResponse()
+                        .withStatus(200) // Simulate a 200 OK
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{\"access_token\": \"valid-access-token\"}")
+                ));
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        HttpEntity<String> httpEntity = new HttpEntity<>("grant_type=password&client_id=asgdghdf&client_secret=sadgagsd&username=username&password=password", httpHeaders);
+
+        doReturn("http://localhost:9090/services/oauth2/token").when(salesForceRestClient).getSalesForceTokenUrl();
+        AccessTokenResponse token = salesForceRestClient.getToken(httpEntity);
+
     }
 
 }

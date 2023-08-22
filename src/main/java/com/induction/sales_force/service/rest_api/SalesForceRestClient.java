@@ -26,8 +26,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
 
 import static com.induction.sales_force.util.ApplicationConstants.*;
 
@@ -62,7 +60,7 @@ public class SalesForceRestClient {
     public AccessTokenResponse getToken(HttpEntity<String> httpEntity) {
         ResponseEntity<AccessTokenResponse> salesForceToken;
         try {
-            salesForceToken = restTemplate.postForEntity(SALES_FORCE_TOKEN_URL, httpEntity, AccessTokenResponse.class);
+            salesForceToken = restTemplate.postForEntity(getSalesForceTokenUrl(), httpEntity, AccessTokenResponse.class);
         } catch (HttpClientErrorException e) {
             logger.error("Exception occurred while communicating with sales force api");
             if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
@@ -80,6 +78,10 @@ public class SalesForceRestClient {
             }
         }
         return salesForceToken.getBody();
+    }
+
+    public String getSalesForceTokenUrl() {
+        return SALES_FORCE_TOKEN_URL;
     }
 
 
@@ -144,7 +146,7 @@ public class SalesForceRestClient {
         String requestBody = requestBody(userName, userPassword);
         try {
             HttpRequest httpRequest = HttpRequest.newBuilder()
-                    .uri(new URI(SALES_FORCE_TOKEN_URL))
+                    .uri(new URI(getSalesForceTokenUrl()))
                     .header("Content-Type", "application/x-www-form-urlencoded")
                     .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();
