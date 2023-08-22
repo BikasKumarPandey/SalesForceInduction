@@ -71,7 +71,7 @@ public class SalesForceRestClient {
                     throw new UnauthorizedAccessException("Invalid grant: Authentication failure");
                 }
                 logger.error("Bad Request.");
-                throw new BadRequestException("Bad Request: " + responseBody);
+                throw new BadRequestException("Bad Request: ");
             } else {
                 logger.error("Invalid url get token to communicate with sales force api");
                 throw new ResourceNotFoundException("Error calling Salesforce API url");
@@ -95,7 +95,7 @@ public class SalesForceRestClient {
     public ResponseEntity<String> createEventInSalesForce(HttpEntity<Event> requestHttpEntity) {
         ResponseEntity<String> createdEvent;
         try {
-            createdEvent = restTemplate.exchange(SALES_FORCE_CREATE_EVENT_URL, HttpMethod.POST, requestHttpEntity, String.class);
+            createdEvent = restTemplate.exchange(getForceCreateEventUrl(), HttpMethod.POST, requestHttpEntity, String.class);
         } catch (HttpClientErrorException e) {
             logger.error("Exception occurred while communicating with sales force api");
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
@@ -109,6 +109,14 @@ public class SalesForceRestClient {
             throw new BadRequestException("Bad Request");
         }
         return createdEvent;
+    }
+
+    public String getForceCreateEventUrl() {
+        return SALES_FORCE_CREATE_EVENT_URL;
+    }
+
+    public HttpEntity<Event> getRequestHttpEntity(HttpEntity<Event> requestHttpEntity) {
+        return requestHttpEntity;
     }
 
 
@@ -175,7 +183,7 @@ public class SalesForceRestClient {
             String requestBody = objectMapper.writeValueAsString(requestHttpEntity.getBody());
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI(SALES_FORCE_CREATE_EVENT_URL))
+                    .uri(new URI(getForceCreateEventUrl()))
                     .header(AUTHORIZATION_KEY, authorizationHeader)
                     .header(CONTENT_TYPE, CONTENT_TYPE_JSON)
                     .POST(HttpRequest.BodyPublishers.ofString(requestBody, StandardCharsets.UTF_8))
