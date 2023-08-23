@@ -1,6 +1,5 @@
 package com.induction.sales_force.service.rest_api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.induction.sales_force.dto.AccessTokenResponse;
 import com.induction.sales_force.dto.Event;
@@ -130,7 +129,7 @@ public class SalesForceRestClient {
     public ResponseEntity<String> getEventFromSalesForce(HttpEntity<Event> requestHttpEntity) {
         ResponseEntity<String> eventsFromSalesForce;
         try {
-            eventsFromSalesForce = restTemplate.exchange(SALES_FORCE_GET_EVENT_URL, HttpMethod.GET, requestHttpEntity, String.class);
+            eventsFromSalesForce = restTemplate.exchange(getSalesForceGetEventUrl(), HttpMethod.GET, requestHttpEntity, String.class);
         } catch (HttpClientErrorException e) {
             logger.error("Exception occurred while communicating with sales force api");
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
@@ -146,8 +145,13 @@ public class SalesForceRestClient {
         return eventsFromSalesForce;
     }
 
+    public String getSalesForceGetEventUrl() {
+        return SALES_FORCE_GET_EVENT_URL;
+    }
+
     /*
      * @Version 2
+     *
      * */
 
     public AccessTokenResponse getToken2(String userName, String userPassword) {

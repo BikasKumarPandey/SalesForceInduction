@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 
 import static com.induction.sales_force.util.MockModels.getAccessTokenResponse;
 import static com.induction.sales_force.util.MockModels.getEvent;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -25,6 +26,7 @@ import static com.induction.sales_force.util.TestCasesConstantApp.USER_NAME_VALU
 import static com.induction.sales_force.util.TestCasesConstantApp.BLANK;
 import static com.induction.sales_force.util.TestCasesConstantApp.TOKEN;
 import static com.induction.sales_force.util.TestCasesConstantApp.AUTHORIZATION_VALUE;
+import static com.induction.sales_force.util.TestCasesConstantApp.INVALID_USER_DETAILS;
 
 @ExtendWith(MockitoExtension.class)
 public class SalesforceServiceImplTest {
@@ -38,9 +40,10 @@ public class SalesforceServiceImplTest {
     @Test
     public void getSalesforceToken_when_userName_is_empty_throw_exception() throws Exception {
 
-        assertThrows(BadRequestException.class, () -> {
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> {
             salesforceService.getSalesforceToken("", PASSWORD_VALUE);
         });
+        assertEquals(INVALID_USER_DETAILS, exception.getMessage());
     }
 
     @Test
@@ -81,7 +84,7 @@ public class SalesforceServiceImplTest {
         when(salesForceRestClient.getToken(any())).thenReturn(getAccessTokenResponse());
 
         AccessTokenResponse actualToken = salesforceService.getSalesforceToken(USER_NAME_VALUE, PASSWORD_VALUE);
-        Assertions.assertEquals(TOKEN, actualToken.getAccessToken());
+        assertEquals(TOKEN, actualToken.getAccessToken());
     }
 
     @Test
@@ -107,8 +110,8 @@ public class SalesforceServiceImplTest {
         when(salesForceRestClient.createEventInSalesForce(any())).thenReturn(ResponseEntity.ok(TOKEN));
 
         ResponseEntity<String> actualValue = salesforceService.createEventInSalesForce(getEvent(), AUTHORIZATION_VALUE);
-        Assertions.assertEquals(TOKEN, actualValue.getBody());
-        Assertions.assertEquals(HttpStatus.OK, actualValue.getStatusCode());
+        assertEquals(TOKEN, actualValue.getBody());
+        assertEquals(HttpStatus.OK, actualValue.getStatusCode());
     }
 
     @Test
@@ -135,7 +138,7 @@ public class SalesforceServiceImplTest {
         ResponseEntity<String> eventFromSalesForce = salesforceService.getEventFromSalesForce(AUTHORIZATION_VALUE);
         String actualEvent = eventFromSalesForce.getBody();
 
-        Assertions.assertEquals(getEvent().toString(), actualEvent);
+        assertEquals(getEvent().toString(), actualEvent);
     }
 
     @Test

@@ -13,7 +13,12 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-
+/**
+ * This is a JavaDoc comment for a class.
+ * @Author Bikas
+ * @Version 1.0
+ * @Since 2023
+ */
 @RestController
 @RequestMapping("/api/salesforce/")
 public class SalesForceController {
