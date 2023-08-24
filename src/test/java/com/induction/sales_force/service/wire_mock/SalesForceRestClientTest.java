@@ -77,18 +77,14 @@ public class SalesForceRestClientTest {
                                 .withBody(getTokenMockResponse()))
         );
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        HttpEntity<String> httpEntity = new HttpEntity<>(requestBody(), httpHeaders);
-
         doReturn("http://localhost:9090/services/oauth2/token").when(salesForceRestClient).getSalesForceTokenUrl();
-        AccessTokenResponse token = salesForceRestClient.getToken(httpEntity);
+        AccessTokenResponse token = salesForceRestClient.getToken(getHttpEntityForGetToken());
         assertEquals(token.getAccessToken(), "valid-access-token");
         assertEquals(token.getTokenType(), "Bearer");
     }
 
     @Test
-    public void getToken_when_valid_input_gives_responseAuth() {
+    public void getToken_when_inValidAuth_given_throws_exception() {
         String expecteMessage = "Invalid grant: Authentication failure";
         wireMockServer.stubFor(
                 post(urlEqualTo("/services/oauth2/token"))
@@ -99,19 +95,13 @@ public class SalesForceRestClientTest {
                                 .withBody(getTokenMockResponseAuth()))
         );
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        HttpEntity<String> httpEntity = new HttpEntity<>(requestBody(), httpHeaders);
-
         doReturn("http://localhost:9090/services/oauth2/token").when(salesForceRestClient).getSalesForceTokenUrl();
         try {
-            AccessTokenResponse token = salesForceRestClient.getToken(httpEntity);
+            AccessTokenResponse token = salesForceRestClient.getToken(getHttpEntityForGetToken());
         } catch (UnauthorizedAccessException e) {
             assertEquals(expecteMessage, e.getMessage());
         }
-
     }
-
 
     @Test
     public void getToken_when_Invalid_input_throws_exception() {
@@ -125,12 +115,8 @@ public class SalesForceRestClientTest {
                                 .withBody(expecteMessage))
         );
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        HttpEntity<String> httpEntity = new HttpEntity<>(requestBody(), httpHeaders);
-
         try {
-            AccessTokenResponse token = salesForceRestClient.getToken(httpEntity);
+            AccessTokenResponse token = salesForceRestClient.getToken(getHttpEntityForGetToken());
             assertNull(token);
         } catch (BadRequestException e) {
             assertEquals(expecteMessage, e.getMessage());
@@ -138,12 +124,8 @@ public class SalesForceRestClientTest {
     }
 
     @Test
-    public void getToken_when_Invalid_input_throws_resouceNotFound_exception() {
+    public void getToken_when_Invalid_url_given_throws_resouceNotFound_exception() {
         String expecteMessage = "Error calling Salesforce API url";
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        HttpEntity<String> httpEntity = new HttpEntity<>(requestBody(), httpHeaders);
-
         wireMockServer.stubFor(
                 post(urlEqualTo("/services/oauth2/token"))
                         .withHeader(CONTENT_TYPE, equalTo(MediaType.APPLICATION_FORM_URLENCODED_VALUE))
@@ -154,12 +136,23 @@ public class SalesForceRestClientTest {
         );
         doReturn("http://localhost:9090/services/oauth2/token").when(salesForceRestClient).getSalesForceTokenUrl();
         try {
-            AccessTokenResponse token = salesForceRestClient.getToken(httpEntity);
+            AccessTokenResponse token = salesForceRestClient.getToken(getHttpEntityForGetToken());
             assertNull(token);
         } catch (ResourceNotFoundException e) {
             assertEquals(expecteMessage, e.getMessage());
         }
     }
+
+    private HttpEntity<String> getHttpEntityForGetToken() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        return new HttpEntity<>(requestBody(), httpHeaders);
+    }
+    /*
+     * till above covered Get Token positive and negative test cases.
+     *
+     *
+     */
 
     @Test
     public void createEventInSalesForce_when_valid_input_given_response() {
