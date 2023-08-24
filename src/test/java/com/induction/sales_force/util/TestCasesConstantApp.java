@@ -23,7 +23,6 @@ public class TestCasesConstantApp {
     public static final String INVALID_USER_DETAILS = "Invalid username and password";
     public static final String CONTENT_TYPE="Content-Type";
     public static final String CONTENT_TYPE_JSON = "application/json";
-    public static final String BEARER = "Bearer ";
     public static final String BEARER_TOKEN = "Bearer RANDOM_TOKEN";
 
 

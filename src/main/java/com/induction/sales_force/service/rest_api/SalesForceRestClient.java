@@ -156,6 +156,7 @@ public class SalesForceRestClient {
 
     public AccessTokenResponse getToken2(String userName, String userPassword) {
         String requestBody = requestBody(userName, userPassword);
+//        String requestBody ="grant_type=password&&client_id=1213&&client_secret=1223&&username=yourUsername&&password=yourPassword";
         try {
             HttpRequest httpRequest = HttpRequest.newBuilder()
                     .uri(new URI(getSalesForceTokenUrl()))
